@@ -1,0 +1,46 @@
+.brand-logo {
+  width: 150px;
+}
+.nav-link:hover,
+.nav-item.show {
+  background-color: #165516;
+  color: #f4f4f4;
+}
+.navbar-nav .nav-link.show {
+  color: #f4f4f4;
+}
+.dropdown-item:focus,
+.dropdown-item:hover {
+  background-color: #77dd77;
+}
+.navbar-nav form {
+  width: 350px;
+  margin-left: 1rem;
+}
+.navbar-nav form input {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 3px;
+  border: #77dd77 1px solid;
+  color: #333333;
+  font-family: 'Lato', 'Helvetica Neue', 'Helvetica', sans-serif;
+  resize: none;
+  padding: 5px 10px;
+}
+.navbar-nav form .form-group {
+  position: relative;
+}
+.navbar-nav form input:focus {
+  outline: none;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.navbar-nav form button {
+  display: inline-block;
+  background: none;
+  border: none;
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  color: #4a4a4a;
+}

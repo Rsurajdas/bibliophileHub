@@ -1,0 +1,35 @@
+.button {
+  display: inline-block;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+  padding: 5px 30px;
+}
+
+.button-solid {
+  background-color: #165516;
+  color: #f4f4f4;
+}
+
+.button-solid:hover {
+  background-color: hsl(120, 59%, 17%);
+}
+
+.button-outline {
+  border: 1px solid #165516;
+}
+
+.button-outline:hover {
+  background-color: #165516;
+  color: #f4f4f4;
+}
+
+.button-text {
+  padding: 0;
+}
+
+.button-text:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,165 @@
+.post {
+  background-color: #fff;
+  border: 1px solid #d8d8d8;
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.post-header {
+  margin-left: 30px;
+  padding-right: 1rem;
+}
+
+.btn-custom,
+.btn-dropdown {
+  background: none;
+  border: none;
+  cursor: pointer;
+  background-color: #409d69;
+  color: #f4f4f4;
+  height: 35px;
+  display: inline-block;
+}
+
+.btn-custom {
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  line-height: 1.15;
+  width: 125px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-sizing: content-box;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.btn-dropdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom-right-radius: 3px;
+  border-top-right-radius: 3px;
+  border-left: 1px solid #38883d;
+  padding: 6px 2px;
+  width: 30px;
+  height: 35px;
+}
+
+.btn-wrapper,
+.post-rating,
+.post-cta {
+  display: flex;
+  align-items: center;
+}
+
+.post-cta {
+  gap: 2%;
+}
+
+.post-description {
+  font-size: 14px;
+}
+
+.post-description p {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.post-footer {
+  background-color: rgba(216, 216, 216, 0.3);
+  border-top: 1px solid #d8d8d8;
+}
+
+.post-comment {
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 2%;
+}
+
+.post-liked {
+  color: #333333;
+  padding: 8px;
+  font-size: 14px;
+  line-height: 18px;
+  border-bottom: 1px solid #d8d8d8;
+}
+
+.post form {
+  flex: 1;
+}
+
+.post .form-group {
+  width: 100%;
+}
+
+.post .form-group textarea {
+  width: 97%;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.post .form-group textarea:focus {
+  outline: none;
+  border: 1px solid #409d69;
+}
+
+.post-img {
+  min-width: 120px;
+  width: 120px;
+}
+
+.post-img img {
+  object-fit: cover;
+}
+
+.post-details {
+  display: flex;
+  gap: 2%;
+}
+
+.post-content h4 {
+  font-size: 16px;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.post-content h4 a {
+  color: #409d69;
+}
+
+.post-author {
+  font-size: 14px;
+}
+
+.post-cta {
+  margin: 4px 4px 8px 0;
+}
+
+.post-by {
+  font-size: 14px;
+  color: #333333;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 2%;
+}
+
+.post-activity {
+  padding: 8px;
+  padding-left: 0;
+}
+
+.post-header {
+  padding: 8px;
+}
+
+.post-avatar {
+  position: absolute;
+  top: 10px;
+  left: -20px;
+}

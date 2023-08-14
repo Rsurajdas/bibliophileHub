@@ -1,0 +1,31 @@
+.books {
+  display: flex;
+  justify-content: space-between;
+  /* gap: 2%; */
+}
+.book {
+  width: 157px;
+  /* padding: 0 5px 5px; */
+}
+.book-img {
+  min-width: 157px;
+  width: 157px;
+  height: 243px;
+}
+.book-img img {
+  object-fit: cover;
+}
+.book-title {
+  font-size: 14px;
+  margin-top: 0.5rem;
+  color: hsl(120, 60%, 28%);
+  font-weight: 600;
+  margin-bottom: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.book-author {
+  font-size: 12px;
+  color: #2a2a2a;
+}
