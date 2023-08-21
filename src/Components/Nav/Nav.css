@@ -1,23 +1,45 @@
+.custom-nav {
+  background-color: #f1fcf1;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
 .brand-logo {
-  width: 150px;
+  width: 200px;
 }
-.nav-link:hover,
-.nav-item.show {
-  background-color: #165516;
+.brand-logo img {
+  object-fit: contain;
+}
+.custom-navbar {
+  display: flex;
+}
+.nav-item {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  margin-left: 1.5rem;
+}
+.nav-list {
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+.nav-list:hover {
+  background-color: hsl(120, 59%, 17%);
+}
+.nav-list:hover .nav-link {
   color: #f4f4f4;
 }
-.navbar-nav .nav-link.show {
-  color: #f4f4f4;
-}
-.dropdown-item:focus,
-.dropdown-item:hover {
-  background-color: #77dd77;
-}
-.navbar-nav form {
+.custom-navbar form {
   width: 350px;
   margin-left: 1rem;
+  display: flex;
+  align-items: center;
 }
-.navbar-nav form input {
+.custom-navbar form input {
   width: 100%;
   background: #ffffff;
   border-radius: 3px;
@@ -27,14 +49,15 @@
   resize: none;
   padding: 5px 10px;
 }
-.navbar-nav form .form-group {
+.custom-navbar form .form-group {
   position: relative;
+  width: 100%;
 }
-.navbar-nav form input:focus {
+.custom-navbar form input:focus {
   outline: none;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
-.navbar-nav form button {
+.custom-navbar form button {
   display: inline-block;
   background: none;
   border: none;

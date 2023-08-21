@@ -1,0 +1,8 @@
+.auth-wrapper h1 {
+  font-size: 32px;
+  line-height: 1.45;
+}
+
+.auth-wrapper .logo img {
+  width: 205px;
+}

@@ -2,9 +2,11 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import RootLayout from './RootLayout';
 import './App.css';
+import { authAction } from './Actions/authAction';
 const Genres = lazy(() => import('./Pages/Genres'));
 const Home = lazy(() => import('./Pages/Home'));
 const Genre = lazy(() => import('./Pages/Genre'));
+const SignIn = lazy(() => import('./Pages/SignIn'));
 
 const router = createBrowserRouter([
   {
@@ -41,6 +43,15 @@ const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: '/signin',
+    element: (
+      <Suspense>
+        <SignIn />
+      </Suspense>
+    ),
+    action: authAction,
   },
 ]);
 

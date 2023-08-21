@@ -8,6 +8,10 @@
   padding: 5px 30px;
 }
 
+.button.round {
+  border-radius: 5rem;
+}
+
 .button-solid {
   background-color: #165516;
   color: #f4f4f4;

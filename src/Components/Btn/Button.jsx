@@ -1,10 +1,19 @@
 import PropTypes from 'prop-types';
 import './Button.css';
 
-const Button = ({ type, text, onClick, sx, isDisable = false }) => {
+const Button = ({
+  type,
+  variant,
+  text,
+  onClick,
+  sx,
+  isDisable = false,
+  rounded,
+}) => {
   return (
     <button
-      className={`button button-${type}`}
+      type={type}
+      className={`button button-${variant} ${rounded ? 'round' : null}`}
       onClick={onClick}
       style={sx}
       disabled={isDisable}
@@ -15,11 +24,13 @@ const Button = ({ type, text, onClick, sx, isDisable = false }) => {
 };
 
 Button.propTypes = {
+  variant: PropTypes.string,
   type: PropTypes.string,
   text: PropTypes.string,
   onClick: PropTypes.func,
   sx: PropTypes.object,
   isDisable: PropTypes.bool,
+  rounded: PropTypes.bool,
 };
 
 export default Button;

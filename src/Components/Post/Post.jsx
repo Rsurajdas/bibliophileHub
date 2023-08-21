@@ -65,11 +65,12 @@ const Post = () => {
           </div>
           <div className="post-activity">
             <Button
-              type="text"
+              type="button"
+              variant="text"
               text={`${liked ? 'Unlike' : 'Like'}`}
               onClick={() => setLiked((l) => !l)}
             />{' '}
-            | <Button type="text" text="Comment" />
+            | <Button type="button" variant="text" text="Comment" />
           </div>
         </div>
         <div className="post-footer">
