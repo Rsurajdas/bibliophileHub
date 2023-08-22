@@ -9,6 +9,7 @@ const Button = ({
   sx,
   isDisable = false,
   rounded,
+  element,
 }) => {
   return (
     <button
@@ -19,6 +20,7 @@ const Button = ({
       disabled={isDisable}
     >
       {text}
+      {element}
     </button>
   );
 };
@@ -31,6 +33,7 @@ Button.propTypes = {
   sx: PropTypes.object,
   isDisable: PropTypes.bool,
   rounded: PropTypes.bool,
+  element: PropTypes.element,
 };
 
 export default Button;

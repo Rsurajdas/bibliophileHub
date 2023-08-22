@@ -3,10 +3,13 @@ import { lazy, Suspense } from 'react';
 import RootLayout from './RootLayout';
 import './App.css';
 import { authAction } from './Actions/authAction';
+import { signUpAction } from './Actions/signUpAction';
 const Genres = lazy(() => import('./Pages/Genres'));
 const Home = lazy(() => import('./Pages/Home'));
 const Genre = lazy(() => import('./Pages/Genre'));
 const SignIn = lazy(() => import('./Pages/SignIn'));
+const MyBooks = lazy(() => import('./Pages/Mybooks'));
+const SignUp = lazy(() => import('./Pages/SignUp'));
 
 const router = createBrowserRouter([
   {
@@ -18,6 +21,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense>
             <Home />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/mybooks',
+        element: (
+          <Suspense>
+            <MyBooks />
           </Suspense>
         ),
       },
@@ -52,6 +63,15 @@ const router = createBrowserRouter([
       </Suspense>
     ),
     action: authAction,
+  },
+  {
+    path: '/signup',
+    element: (
+      <Suspense>
+        <SignUp />
+      </Suspense>
+    ),
+    action: signUpAction,
   },
 ]);
 

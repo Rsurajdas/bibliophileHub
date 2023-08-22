@@ -1,16 +1,16 @@
-import { Form, useActionData } from 'react-router-dom';
+import { Form, useActionData, Link } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import FormInput from '../Components/Form/FormInput';
 import Button from '../Components/Btn/Button';
+import ErrorMessage from '../Components/Error/ErrorMessage';
 
 const SignIn = () => {
   const data = useActionData();
   return (
     <section>
-      {console.log(data)}
       <Container>
         <Row className="justify-content-center">
-          <Col md={4}>
+          <Col md={3}>
             <div className="auth-wrapper">
               <div className="auth-top text-center mb-3">
                 <div className="logo mb-3">
@@ -19,6 +19,7 @@ const SignIn = () => {
                     alt="bibliophile hub logo"
                   />
                 </div>
+                {data && <ErrorMessage message={data.message} />}
                 <h1>Sign in</h1>
               </div>
               <Form method="POST">
@@ -40,6 +41,12 @@ const SignIn = () => {
                     rounded={true}
                   />
                 </div>
+                <div
+                  className="form-group"
+                  style={{ textAlign: 'right', margin: '0' }}
+                >
+                  <Link to="/forgot-password">Forgot your password?</Link>
+                </div>
                 <Button
                   text="Submit"
                   type="submit"
@@ -48,6 +55,11 @@ const SignIn = () => {
                   sx={{ width: '100%', marginTop: '10px' }}
                 />
               </Form>
+              <small className="d-block mt-3">
+                By signing in, you agree to the Bibliophile Hub{' '}
+                <Link to="/">Terms of Service</Link> and{' '}
+                <Link to="/">Privacy Policy</Link>
+              </small>
             </div>
           </Col>
         </Row>

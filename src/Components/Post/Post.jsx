@@ -88,7 +88,7 @@ const Post = () => {
                   style={{ height: '40px' }}
                 ></textarea>
                 <Button
-                  type="solid"
+                  variant="solid"
                   text="comment"
                   sx={{ padding: '3px 10px' }}
                 />

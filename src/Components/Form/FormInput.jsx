@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import './Form.css';
 
-const FormInput = ({ fieldName, type, name, id, rounded }) => {
+const FormInput = ({ fieldName, type, name, id, rounded, message }) => {
   return (
     <>
       <label htmlFor={name} className="form-label">
@@ -13,6 +14,11 @@ const FormInput = ({ fieldName, type, name, id, rounded }) => {
         id={id}
         className={`form-input ${rounded ? 'round' : null}`}
       />
+      {message && (
+        <small style={{ color: '#707070', fontSize: '12px' }}>
+          <InfoOutlinedIcon fontSize="small" /> {message}
+        </small>
+      )}
     </>
   );
 };
@@ -23,6 +29,7 @@ FormInput.propTypes = {
   name: PropTypes.string,
   id: PropTypes.string,
   rounded: PropTypes.bool,
+  message: PropTypes.string,
 };
 
 export default FormInput;

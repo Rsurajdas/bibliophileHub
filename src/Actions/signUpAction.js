@@ -1,27 +1,30 @@
 import { redirect } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 
-export const authAction = async ({ request }) => {
+export const signUpAction = async ({ request }) => {
   const formData = await request.formData();
   const cookie = new Cookies();
-  const credentials = {
+  const userData = {
+    name: formData.get('name'),
     email: formData.get('email'),
+    role: formData.get('role'),
     password: formData.get('password'),
+    confirmPassword: formData.get('confirmPassword'),
   };
 
-  const res = await fetch('http://127.0.0.1:3000/api/v1/users/login', {
+  const res = await fetch('http://127.0.0.1:3000/api/v1/users/signup', {
     method: 'POST',
-    body: JSON.stringify(credentials),
+    body: JSON.stringify(userData),
     headers: {
       'Content-Type': 'application/json',
     },
   });
 
-  if (res.status === 401) {
-    return res;
-  }
-
   const data = await res.json();
+
+  if (res.status === 400) {
+    return data;
+  }
 
   const token = data.token;
   const userId = data.data.user._id;

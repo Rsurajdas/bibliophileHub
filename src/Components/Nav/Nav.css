@@ -12,6 +12,8 @@
 }
 .custom-navbar {
   display: flex;
+  align-items: center;
+  gap: 1%;
 }
 .nav-item {
   display: flex;
@@ -33,37 +35,17 @@
 .nav-list:hover .nav-link {
   color: #f4f4f4;
 }
-.custom-navbar form {
-  width: 350px;
-  margin-left: 1rem;
-  display: flex;
-  align-items: center;
+.nav-icon {
+  padding: 12px 5px;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
-.custom-navbar form input {
-  width: 100%;
-  background: #ffffff;
-  border-radius: 3px;
-  border: #77dd77 1px solid;
-  color: #333333;
-  font-family: 'Lato', 'Helvetica Neue', 'Helvetica', sans-serif;
-  resize: none;
-  padding: 5px 10px;
+.nav-icon img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  overflow: hidden;
 }
-.custom-navbar form .form-group {
-  position: relative;
-  width: 100%;
-}
-.custom-navbar form input:focus {
-  outline: none;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-}
-.custom-navbar form button {
-  display: inline-block;
-  background: none;
-  border: none;
-  position: absolute;
-  top: 50%;
-  right: 8px;
-  transform: translateY(-50%);
-  color: #4a4a4a;
+.nav-icon:hover {
+  background-color: hsl(120, 59%, 17%);
 }

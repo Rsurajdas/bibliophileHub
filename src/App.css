@@ -1,8 +1,95 @@
+.auth-wrapper {
+  padding: 50px 0;
+}
+
 .auth-wrapper h1 {
   font-size: 32px;
   line-height: 1.45;
 }
 
 .auth-wrapper .logo img {
-  width: 205px;
+  width: 210px;
+}
+
+.book-shelf h4 {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.book-shelf ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.book-table {
+  width: 100%;
+}
+
+.book-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.book-table table tr {
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.book-table table tr th {
+  padding: 5px;
+  font-size: 14px;
+}
+
+.book-table table tr td {
+  padding: 5px;
+  text-align: left;
+  vertical-align: top;
+  font-size: 14px;
+}
+
+.book-table .cover-img {
+  display: block;
+  width: 60px;
+}
+
+.grid {
+  display: grid;
+}
+
+.item {
+  position: relative;
+}
+
+.float-link {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #fff;
+  padding: 2px;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.item:hover .float-link {
+  display: block;
+}
+
+.message {
+  position: relative;
+  padding: 14px 18px;
+  padding-left: 63px;
+  background-color: hsl(120, 59%, 90%);
+  text-align: left;
+  border-radius: 1rem;
+}
+
+.message-icon {
+  height: 27px;
+  width: 30px;
+  position: absolute;
+  left: 18px;
+  top: 11px;
 }
