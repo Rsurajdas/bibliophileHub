@@ -4,12 +4,14 @@ import RootLayout from './RootLayout';
 import './App.css';
 import { authAction } from './Actions/authAction';
 import { signUpAction } from './Actions/signUpAction';
+import { bookDetailLoader } from './Loaders/bookDetailLoader';
 const Genres = lazy(() => import('./Pages/Genres'));
 const Home = lazy(() => import('./Pages/Home'));
 const Genre = lazy(() => import('./Pages/Genre'));
 const SignIn = lazy(() => import('./Pages/SignIn'));
 const MyBooks = lazy(() => import('./Pages/Mybooks'));
 const SignUp = lazy(() => import('./Pages/SignUp'));
+const BookDetail = lazy(() => import('./Pages/BookDetail'));
 
 const router = createBrowserRouter([
   {
@@ -50,6 +52,20 @@ const router = createBrowserRouter([
                 <Genre />
               </Suspense>
             ),
+          },
+        ],
+      },
+      {
+        path: '/book',
+        children: [
+          {
+            path: ':id',
+            element: (
+              <Suspense>
+                <BookDetail />
+              </Suspense>
+            ),
+            loader: bookDetailLoader,
           },
         ],
       },

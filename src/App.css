@@ -93,3 +93,45 @@
   left: 18px;
   top: 11px;
 }
+
+.detail-img {
+  border-radius: 0 6% 6% 0/4%;
+  transition: transform 0.2s ease-in-out;
+  filter: drop-shadow(0 0.2rem 0.8rem rgba(0, 0, 0, 0.2));
+  position: relative;
+  width: 207.9px;
+  margin: 0 auto;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.detail-title {
+  font-size: 30px;
+  line-height: 46px;
+}
+
+.detail-author {
+  font-size: 20px;
+  font-family: 'Merriweather', serif;
+  font-weight: 300;
+  margin-bottom: 8px;
+}
+
+.detail-genres {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  list-style: none;
+  gap: 10px;
+}
+
+.detail-genres::before {
+  content: 'Genres:';
+}
+
+.detail-genres li a {
+  color: #2a2a2a;
+  font-weight: 700;
+  border-bottom: 3px solid #165516;
+  padding-bottom: 5px;
+}
