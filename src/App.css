@@ -135,3 +135,53 @@
   border-bottom: 3px solid #165516;
   padding-bottom: 5px;
 }
+
+.edition-item dt,
+.edition-item dd {
+  display: table-cell;
+  padding: 0.4rem 0;
+}
+
+.edition-item dt {
+  width: 125px;
+  padding-right: 16px;
+  color: #707070;
+  font-size: 400;
+  font-size: 14px;
+}
+
+.edition-item dd {
+  font-size: 14px;
+}
+
+.author-image {
+  width: 72px;
+  height: 72px;
+}
+
+.author-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+}
+
+.author-left {
+  gap: 2%;
+}
+
+.author-left,
+.author-right {
+  flex: 1;
+}
+
+.author-details h6 {
+  margin-bottom: 5px;
+}
+
+.author {
+  width: 100%;
+}
+
+.author-right {
+  text-align: right;
+}
