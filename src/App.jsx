@@ -5,6 +5,7 @@ import './App.css';
 import { authAction } from './Actions/authAction';
 import { signUpAction } from './Actions/signUpAction';
 import { bookDetailLoader } from './Loaders/bookDetailLoader';
+import { checkAuthLoader, tokenLoader } from './utils/auth';
 const Genres = lazy(() => import('./Pages/Genres'));
 const Home = lazy(() => import('./Pages/Home'));
 const Genre = lazy(() => import('./Pages/Genre'));
@@ -17,6 +18,8 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <RootLayout />,
+    id: 'token',
+    loader: tokenLoader,
     children: [
       {
         path: '/',
@@ -79,6 +82,7 @@ const router = createBrowserRouter([
       </Suspense>
     ),
     action: authAction,
+    loader: checkAuthLoader,
   },
   {
     path: '/signup',
@@ -88,6 +92,7 @@ const router = createBrowserRouter([
       </Suspense>
     ),
     action: signUpAction,
+    loader: checkAuthLoader,
   },
 ]);
 

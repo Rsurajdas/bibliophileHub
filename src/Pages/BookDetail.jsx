@@ -1,44 +1,57 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { useLoaderData, Link } from 'react-router-dom';
+import {
+  useLoaderData,
+  Link,
+  useRouteLoaderData,
+  redirect,
+} from 'react-router-dom';
 import Button from './../Components/Btn/Button';
 import Capitalize from 'lodash.capitalize';
 import PostBtn from '../Components/Post/PostBtn';
 import parse from 'html-react-parser';
 import Rating from '@mui/material/Rating';
+import { ToastContainer, toast } from 'react-toastify';
 import './../Components/Post/Post.css';
 import './../Components/Btn/Button.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 const BookDetail = () => {
-  const data = useLoaderData();
-  const [res, setRes] = useState({});
-  const handleAddFollower = async () => {
+  const { book, user } = useLoaderData();
+  const [isFollowing, setIsFollowing] = useState(false);
+  const token = useRouteLoaderData('token');
+
+  useEffect(() => {
+    setIsFollowing(user.following.includes(book.author._id));
+  }, []);
+
+  const handleFollowToggle = async (id) => {
+    if (!token) return redirect('/signin');
+
+    const action = isFollowing ? 'unfollow' : 'follow';
     const res = await fetch(
-      `http://127.0.0.1:3000/api/v1/users/follow/64e3b868e1defc3cacbeadf9`,
+      `http://127.0.0.1:3000/api/v1/users/${action}/${id}`,
       {
         method: 'POST',
         headers: {
-          'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZGUxZDIxODNmMDY0MDU5MGZhZjg4MiIsImlhdCI6MTY5MjkwOTAwMSwiZXhwIjoxNjkzNTEzODAxfQ.6UNnUrODzHNb1guppf8OOiIHP5e2VJWD5XE_sCMbQNc',
+          'Authorization': `Bearer ${token}`,
         },
       }
     );
-
     const data = await res.json();
-
-    setRes(data);
+    toast(data.message);
+    setIsFollowing(!isFollowing);
   };
 
   return (
     <main>
-      {console.log(res)}
       <section style={{ padding: '20px 0' }}>
         <Container>
           <Row>
             <Col md={3}>
               <div className="detail-aside">
                 <div className="detail-img">
-                  <img src={data.book_image} alt={data.title} />
+                  <img src={book.book_image} alt={book.title} />
                 </div>
                 <PostBtn sx={{ width: '250px', margin: '1rem auto' }} />
                 <div
@@ -46,7 +59,7 @@ const BookDetail = () => {
                   style={{ width: '250px', margin: '1rem auto' }}
                 >
                   <a
-                    href={data.amazon_product_url}
+                    href={book.amazon_product_url}
                     style={{ width: '250px', borderRadius: '2.5rem' }}
                     className="button button-outline text-center"
                     target="_blank"
@@ -60,9 +73,9 @@ const BookDetail = () => {
             <Col md={9}>
               <div className="detail-content">
                 <h1 className="detail-title">
-                  {Capitalize(data.title.toLowerCase())}
+                  {Capitalize(book.title.toLowerCase())}
                 </h1>
-                <div className="detail-author">{data.author.name}</div>
+                <div className="detail-author">{book.author.name}</div>
                 <Rating
                   name="read-only"
                   value={4}
@@ -70,9 +83,9 @@ const BookDetail = () => {
                   size="large"
                   sx={{ padding: '8px', margin: '-8px -8px 0 -8px' }}
                 />
-                <div className="detail-content">{parse(data.description)}</div>
+                <div className="detail-content">{parse(book.description)}</div>
                 <ul className="detail-genres mb-4 border-bottom pb-4">
-                  {data.genres.map((genre) => (
+                  {book.genres.map((genre) => (
                     <li key={genre._id}>
                       <Link to={genre.genre_name_encoded}>
                         {genre.genre_name}
@@ -84,12 +97,12 @@ const BookDetail = () => {
                   <h6>This edition</h6>
                   <div className="edition-item">
                     <dt>Published</dt>
-                    <dd>by {data.publisher}</dd>
+                    <dd>by {book.publisher}</dd>
                   </div>
                   <div className="edition-item">
                     <dt>ISBN</dt>
                     <dd>
-                      {data.primary_isbn13} (ISBN10: {data.primary_isbn10})
+                      {book.primary_isbn13} (ISBN10: {book.primary_isbn10})
                     </dd>
                   </div>
                 </div>
@@ -97,14 +110,14 @@ const BookDetail = () => {
                   <div className="author-left d-flex ">
                     <div className="author-image">
                       <img
-                        src={`http://127.0.0.1:3000${data.author.photo}`}
+                        src={`http://127.0.0.1:3000${book.author.photo}`}
                         alt=""
                       />
                     </div>
                     <div className="author-details mt-1">
-                      <h6>{data.author.name}</h6>
+                      <h6>{book.author.name}</h6>
                       <div className="">
-                        {data.author.followers.length} followers
+                        {book.author.followers.length} followers
                       </div>
                     </div>
                   </div>
@@ -112,8 +125,8 @@ const BookDetail = () => {
                     <Button
                       type="button"
                       variant="solid"
-                      text={res.status === 'success' ? 'Following' : 'Follow'}
-                      onClick={handleAddFollower}
+                      text={isFollowing ? 'Following' : 'Follow'}
+                      onClick={() => handleFollowToggle(book.author._id)}
                     />
                   </div>
                 </div>
@@ -121,6 +134,7 @@ const BookDetail = () => {
             </Col>
           </Row>
         </Container>
+        <ToastContainer position="bottom-left" />
       </section>
     </main>
   );
