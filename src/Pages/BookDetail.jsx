@@ -11,18 +11,34 @@ import Capitalize from 'lodash.capitalize';
 import PostBtn from '../Components/Post/PostBtn';
 import parse from 'html-react-parser';
 import Rating from '@mui/material/Rating';
+import Modal from '@mui/joy/Modal';
+import ModalClose from '@mui/joy/ModalClose';
+import ModalDialog from '@mui/joy/ModalDialog';
+import Select from '@mui/joy/Select';
+import Option from '@mui/joy/Option';
 import { ToastContainer, toast } from 'react-toastify';
 import './../Components/Post/Post.css';
 import './../Components/Btn/Button.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 const BookDetail = () => {
-  const { book, user } = useLoaderData();
+  const { book, user, shelves } = useLoaderData();
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isShelved, setIsShelved] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [shelfId, setShelfId] = useState('');
   const token = useRouteLoaderData('token');
 
   useEffect(() => {
     setIsFollowing(user.following.includes(book.author._id));
+  }, []);
+
+  useEffect(() => {
+    for (const shelf of shelves) {
+      if (shelf.books.includes(book._id)) {
+        setIsShelved(true);
+      }
+    }
   }, []);
 
   const handleFollowToggle = async (id) => {
@@ -38,9 +54,28 @@ const BookDetail = () => {
         },
       }
     );
-    const data = await res.json();
+    await res.json();
     setIsFollowing(!isFollowing);
     window.location.reload(true);
+  };
+
+  const handleAddToShelf = async (evt, newValue) => {
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:3000/api/v1/shelf/add-book/${newValue}/${book._id}`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+      const data = res.json();
+      toast.done(data.message);
+      setIsShelved(true);
+    } catch (err) {
+      toast.error(err.message);
+    }
   };
 
   return (
@@ -50,12 +85,14 @@ const BookDetail = () => {
           <Row>
             <Col md={3}>
               <div className="detail-aside">
-                <div className="detail-img">
+                <div className="detail-img ">
                   <img src={book.book_image} alt={book.title} />
                 </div>
                 <PostBtn
-                  sx={{ width: '250px', margin: '1rem auto' }}
+                  sx={{ width: '250px', margin: '2rem auto 1rem' }}
                   bookId={book._id}
+                  isShelved={isShelved}
+                  setOpen={setOpen}
                 />
                 <div
                   className="btn-wrapper"
@@ -137,8 +174,33 @@ const BookDetail = () => {
             </Col>
           </Row>
         </Container>
-        <ToastContainer position="bottom-left" />
       </section>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <ModalDialog
+          aria-labelledby="size-modal-title"
+          aria-describedby="size-modal-description"
+          size="sm"
+        >
+          <ModalClose />
+          <div className="shelf-container">
+            <h6 className="mb-4">Choose a shelf for this book</h6>
+            <Select placeholder="Choose a shelf" onChange={handleAddToShelf}>
+              {shelves &&
+                shelves.map((shelf) => (
+                  <Option value={shelf._id} key={shelf._id}>
+                    {shelf.shelf_name}
+                  </Option>
+                ))}
+            </Select>
+            <Button
+              text="Done"
+              variant="outline"
+              onClick={() => setOpen(false)}
+              sx={{ marginTop: '10px' }}
+            />
+          </div>
+        </ModalDialog>
+      </Modal>
     </main>
   );
 };

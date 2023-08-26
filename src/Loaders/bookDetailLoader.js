@@ -17,8 +17,18 @@ export const bookDetailLoader = async ({ params }) => {
   });
   const userData = await userJson.json();
 
+  // Fetch Shelves
+  const shelvesJson = await fetch('http://127.0.0.1:3000/api/v1/shelf', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+  const shelvesData = await shelvesJson.json();
+
   return {
     book: bookData.data.book,
     user: userData.data.user,
+    shelves: shelvesData.data.shelves,
   };
 };

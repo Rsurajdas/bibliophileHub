@@ -4,18 +4,18 @@ import SearchField from '../Components/Nav/SearchField';
 import MenuIcon from '@mui/icons-material/Menu';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import Button from '../Components/Btn/Button';
-import { Link, useLoaderData, useRouteLoaderData } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { Link, useRouteLoaderData } from 'react-router-dom';
 import Table from '../Components/Table/Table';
 import Grid from '../Components/Layout/Grid';
 import './../Components/Btn/Button.css';
+import AddShelf from '../Components/AddShelf/AddShelf';
 
 const MyBooks = () => {
   const [showTable, setShowTable] = useState(true);
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [shelfId, setShelfId] = useState('');
-  const shelves = useLoaderData();
+  const [shelves, setShelves] = useState();
   const token = useRouteLoaderData('token');
 
   const fetchBooks = async () => {
@@ -32,6 +32,18 @@ const MyBooks = () => {
     setIsLoading(false);
     setBooks(data.data.books);
     setShelfId('');
+  };
+
+  const fetchShelves = async () => {
+    const res = await fetch('http://127.0.0.1:3000/api/v1/shelf', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    setIsLoading(false);
+    setShelves(data.data.shelves);
   };
 
   const fetchBooksByShelf = async (id) => {
@@ -61,13 +73,17 @@ const MyBooks = () => {
           },
         }
       );
-      const data = res.json();
+      await res.json();
       window.location.reload(true);
     }
   };
 
   useEffect(() => {
     fetchBooks();
+  }, []);
+
+  useEffect(() => {
+    fetchShelves();
   }, []);
 
   return (
@@ -115,7 +131,10 @@ const MyBooks = () => {
                 <h4>
                   BookShelves <Link to="/">Edit</Link>
                 </h4>
-                <ul>
+                <div className="pb-2">
+                  <AddShelf setShelves={setShelves} />
+                </div>
+                <ul className="mb-2">
                   <li>
                     <Button
                       className="button"
@@ -184,7 +203,6 @@ const MyBooks = () => {
           </Row>
         </Container>
       </section>
-      <ToastContainer position="bottom-left" />
     </main>
   );
 };

@@ -6,7 +6,6 @@ import { authAction } from './Actions/authAction';
 import { signUpAction } from './Actions/signUpAction';
 import { bookDetailLoader } from './Loaders/bookDetailLoader';
 import { checkAuthLoader, tokenLoader } from './utils/auth';
-import { myBooksLoader } from './Loaders/myBooksLoader';
 const Genres = lazy(() => import('./Pages/Genres'));
 const Home = lazy(() => import('./Pages/Home'));
 const Genre = lazy(() => import('./Pages/Genre'));
@@ -37,7 +36,6 @@ const router = createBrowserRouter([
             <MyBooks />
           </Suspense>
         ),
-        loader: myBooksLoader,
       },
       {
         path: '/genres',
