@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Rating from '@mui/material/Rating';
 import Button from '../Btn/Button';
 
-const Table = ({ data }) => {
+const Table = ({ books, removeBook, shelfId }) => {
   return (
     <table>
       <thead>
@@ -11,75 +11,93 @@ const Table = ({ data }) => {
           <th>cover</th>
           <th>title</th>
           <th>author</th>
-          <th>date pub</th>
+          <th>Publisher</th>
           <th>rating</th>
-          <th>shelve</th>
+          <th>isbn</th>
           <th>review</th>
-          <th></th>
+          {shelfId && <th></th>}
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td style={{ width: '70px' }}>
-            <div className="">
-              <Link>
-                <img
-                  src="/images/9780375726262.jpg"
-                  alt="cover image"
-                  className="cover-img"
-                />
-              </Link>
-            </div>
-          </td>
-          <td
-            style={{
-              width: '180px',
-            }}
-          >
-            <div>The Silent Patient</div>
-          </td>
-          <td
-            style={{
-              width: '90px',
-            }}
-          >
-            <div>Dadheech, puru</div>
-          </td>
-          <td
-            style={{
-              width: '90px',
-            }}
-          >
-            <div>July 23, 2021</div>
-          </td>
-          <td
-            style={{
-              width: '100px',
-            }}
-          >
-            <Rating name="book-rating" defaultValue={2.5} size="small" />
-          </td>
-          <td
-            style={{
-              width: '90px',
-            }}
-          >
-            <Link to="/">to-read</Link>
-          </td>
-          <td>
-            <Link to="/">Write Review</Link>
-          </td>
-          <td>
-            <Button variant="text" text="X" />
-          </td>
-        </tr>
+        {books &&
+          books.map((book) => (
+            <tr key={book._id}>
+              <td style={{ width: '70px' }}>
+                <div className="">
+                  <Link to={`/book/${book._id}`}>
+                    <img
+                      src={book.book_image}
+                      alt={book.title}
+                      className="cover-img"
+                    />
+                  </Link>
+                </div>
+              </td>
+              <td
+                style={{
+                  width: '180px',
+                }}
+              >
+                <div>{book.title}</div>
+              </td>
+              <td
+                style={{
+                  width: '90px',
+                }}
+              >
+                <div>{book.author.name}</div>
+              </td>
+              <td
+                style={{
+                  width: '90px',
+                }}
+              >
+                <div>{book.publisher}</div>
+              </td>
+              <td
+                style={{
+                  width: '110px',
+                }}
+              >
+                <Rating name="book-rating" defaultValue={2.5} size="small" />
+              </td>
+              <td
+                style={{
+                  width: '120px',
+                }}
+              >
+                <div>{book.primary_isbn10}</div>
+              </td>
+              <td>
+                <Link to="/">Write Review</Link>
+              </td>
+              {shelfId && (
+                <td>
+                  <Button
+                    variant="text"
+                    text="X"
+                    onClick={() => removeBook(book._id)}
+                  />
+                </td>
+              )}
+            </tr>
+          ))}
+        {books.length === 0 && (
+          <tr>
+            <td colSpan="8" style={{ textAlign: 'center' }}>
+              No book was found on the shelf.
+            </td>
+          </tr>
+        )}
       </tbody>
     </table>
   );
 };
 
 Table.propTypes = {
-  data: PropTypes.object,
+  books: PropTypes.array,
+  removeBook: PropTypes.func,
+  shelfId: PropTypes.string,
 };
 
 export default Table;

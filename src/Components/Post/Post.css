@@ -163,3 +163,50 @@
   top: 10px;
   left: -20px;
 }
+
+.btn-wrapper {
+  position: relative;
+}
+
+/* .btn-dropdown {
+  position: relative;
+} */
+
+.shelves-wrapper {
+  display: none;
+  position: absolute;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #797979;
+  top: 100%;
+  left: 0;
+  transition: 0.3s;
+  z-index: 7;
+}
+
+.shelves-wrapper ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-size: 12px;
+  text-align: left;
+}
+
+.shelves-wrapper ul li {
+  background-color: #f4f4f4;
+  padding: 7px;
+  transition: 0.3s;
+}
+
+.shelves-wrapper ul li:hover {
+  background-color: #fff;
+}
+
+.shelves-wrapper ul li button {
+  display: inline-block;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}

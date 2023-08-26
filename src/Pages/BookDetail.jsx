@@ -39,8 +39,8 @@ const BookDetail = () => {
       }
     );
     const data = await res.json();
-    toast(data.message);
     setIsFollowing(!isFollowing);
+    window.location.reload(true);
   };
 
   return (
@@ -53,7 +53,10 @@ const BookDetail = () => {
                 <div className="detail-img">
                   <img src={book.book_image} alt={book.title} />
                 </div>
-                <PostBtn sx={{ width: '250px', margin: '1rem auto' }} />
+                <PostBtn
+                  sx={{ width: '250px', margin: '1rem auto' }}
+                  bookId={book._id}
+                />
                 <div
                   className="btn-wrapper"
                   style={{ width: '250px', margin: '1rem auto' }}
