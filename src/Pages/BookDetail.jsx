@@ -26,7 +26,6 @@ const BookDetail = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isShelved, setIsShelved] = useState(false);
   const [open, setOpen] = useState(false);
-  const [shelfId, setShelfId] = useState('');
   const token = useRouteLoaderData('token');
 
   useEffect(() => {
@@ -201,6 +200,7 @@ const BookDetail = () => {
           </div>
         </ModalDialog>
       </Modal>
+      <ToastContainer position="bottom-left" />
     </main>
   );
 };

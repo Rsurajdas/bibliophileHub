@@ -1,18 +1,21 @@
 .books {
   display: flex;
-  justify-content: space-between;
-  /* gap: 2%; */
+  flex-wrap: wrap;
+  gap: 2%;
 }
 .book {
-  width: 157px;
+  width: 140px;
   /* padding: 0 5px 5px; */
+  margin-bottom: 20px;
 }
 .book-img {
-  min-width: 157px;
-  width: 157px;
-  height: 243px;
+  /* min-width: 157px; */
+  width: 100%;
+  height: auto;
 }
 .book-img img {
+  width: 100%;
+  height: auto;
   object-fit: cover;
 }
 .book-title {

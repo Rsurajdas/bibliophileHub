@@ -15,12 +15,14 @@ const Genres = () => {
       try {
         setIsLoading(true);
         const res = await axios.get(
-          'https://api.nytimes.com/svc/books/v3/lists/overview.json?api-key=9OfKWlVWBGblOdFYAXwaJiLk6c6vwBI0',
-          { signal: controller.signal }
+          'http://127.0.0.1:3000/api/v1/books/genres/grouped-by-genres',
+          {
+            signal: controller.signal,
+          }
         );
         const { data } = res;
-        const { results } = data;
-        setData(results.lists);
+
+        setData(data.data);
         setIsLoading(false);
       } catch (err) {
         console.error(err);
@@ -36,35 +38,44 @@ const Genres = () => {
       <Container>
         <Row>
           <Col md={8}>
+            {console.log(data)}
             {isLoading && <p>Loading...</p>}
             {!isLoading &&
-              data.map((detail) => (
-                <section className="py-4" key={detail.list_id}>
+              data.map((genre) => (
+                <section className="py-2 mb-2" key={genre._id}>
                   <Row>
                     <Col md={12}>
                       <Title
                         element={
-                          <h3 style={{ fontSize: '20px' }}>
-                            <Link
-                              to={detail.list_name_encoded}
-                              style={{ color: '#282' }}
-                            >
-                              {detail.display_name}
+                          <div
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                            }}
+                          >
+                            <h3 style={{ fontSize: '20px' }}>
+                              <Link
+                                to={`${genre._id}/${genre.genre_name}`}
+                                style={{ color: '#282' }}
+                              >
+                                {genre.genre_name}
+                              </Link>
+                            </h3>
+                            <Link to={`${genre._id}/${genre.genre_name}`}>
+                              More...
                             </Link>
-                          </h3>
+                          </div>
                         }
                       />
-                      <div className="books mt-3">
-                        {detail.books.map((book) => (
+                      <div className="books mt-1">
+                        {genre.books.map((book) => (
                           <Book key={book.title} book={book} />
                         ))}
                       </div>
                       <div
                         className="d-flex"
                         style={{ justifyContent: 'flex-end' }}
-                      >
-                        <Link to={detail.list_name_encoded}>More...</Link>
-                      </div>
+                      ></div>
                     </Col>
                   </Row>
                 </section>

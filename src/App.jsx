@@ -49,7 +49,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: ':pathName',
+            path: ':pathName/:genreName',
             element: (
               <Suspense>
                 <Genre />

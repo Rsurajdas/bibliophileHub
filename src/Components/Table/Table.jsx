@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Rating from '@mui/material/Rating';
 import Button from '../Btn/Button';
 
-const Table = ({ books, removeBook, shelfId }) => {
+const Table = ({ books, removeBook }) => {
   return (
     <table>
       <thead>
@@ -13,9 +13,9 @@ const Table = ({ books, removeBook, shelfId }) => {
           <th>author</th>
           <th>Publisher</th>
           <th>rating</th>
-          <th>isbn</th>
+          <th>Shelf</th>
           <th>review</th>
-          {shelfId && <th></th>}
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -66,20 +66,18 @@ const Table = ({ books, removeBook, shelfId }) => {
                   width: '120px',
                 }}
               >
-                <div>{book.primary_isbn10}</div>
+                <div>{book.shelf[0].shelf_name}</div>
               </td>
               <td>
                 <Link to="/">Write Review</Link>
               </td>
-              {shelfId && (
-                <td>
-                  <Button
-                    variant="text"
-                    text="X"
-                    onClick={() => removeBook(book._id)}
-                  />
-                </td>
-              )}
+              <td>
+                <Button
+                  variant="text"
+                  text="X"
+                  onClick={() => removeBook(book.shelf[0]._id, book._id)}
+                />
+              </td>
             </tr>
           ))}
         {books.length === 0 && (
@@ -97,7 +95,6 @@ const Table = ({ books, removeBook, shelfId }) => {
 Table.propTypes = {
   books: PropTypes.array,
   removeBook: PropTypes.func,
-  shelfId: PropTypes.string,
 };
 
 export default Table;

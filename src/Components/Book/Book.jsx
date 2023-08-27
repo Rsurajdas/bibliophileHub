@@ -5,13 +5,12 @@ import './Book.css';
 const Book = ({ book }) => {
   return (
     <div className="book">
-      <Link to="/">
+      <Link to={`/book/${book._id}`}>
         <div className="book-img">
           <img src={book.book_image} alt={book.title} />
         </div>
         <div className="books-content">
           <h4 className="book-title">{book.title}</h4>
-          <div className="book-author">{book.author}</div>
         </div>
       </Link>
     </div>

@@ -5,6 +5,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import Button from '../Components/Btn/Button';
 import { Link, useRouteLoaderData } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import Table from '../Components/Table/Table';
 import Grid from '../Components/Layout/Grid';
 import './../Components/Btn/Button.css';
@@ -14,7 +15,6 @@ const MyBooks = () => {
   const [showTable, setShowTable] = useState(true);
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [shelfId, setShelfId] = useState('');
   const [shelves, setShelves] = useState();
   const token = useRouteLoaderData('token');
 
@@ -31,7 +31,6 @@ const MyBooks = () => {
     const data = await res.json();
     setIsLoading(false);
     setBooks(data.data.books);
-    setShelfId('');
   };
 
   const fetchShelves = async () => {
@@ -56,25 +55,28 @@ const MyBooks = () => {
     const data = await res.json();
     setIsLoading(false);
     setBooks(data.data.shelf.books);
-    setShelfId(id);
   };
 
-  const removeBook = async (bookId) => {
+  const removeBook = async (shelfId, bookId) => {
     const confirm = window.confirm(
       'Are you sure want to remove this book from shelf?'
     );
     if (confirm) {
-      const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/shelf/remove-book/${shelfId}/${bookId}`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        }
-      );
-      await res.json();
-      window.location.reload(true);
+      try {
+        const res = await fetch(
+          `http://127.0.0.1:3000/api/v1/shelf/remove-book/${shelfId}/${bookId}`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await res.json();
+        window.location.reload(true);
+      } catch (err) {
+        toast.error(err.message);
+      }
     }
   };
 
@@ -161,11 +163,7 @@ const MyBooks = () => {
             <Col md={9}>
               {showTable ? (
                 <div className="book-table">
-                  <Table
-                    books={books}
-                    removeBook={removeBook}
-                    shelfId={shelfId}
-                  />
+                  <Table books={books} removeBook={removeBook} />
                 </div>
               ) : (
                 <div className="book-grid">
@@ -202,6 +200,7 @@ const MyBooks = () => {
             </Col>
           </Row>
         </Container>
+        <ToastContainer position="bottom-left" />
       </section>
     </main>
   );
