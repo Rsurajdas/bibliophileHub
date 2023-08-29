@@ -166,7 +166,7 @@
 }
 
 .author-left {
-  gap: 2%;
+  gap: 3%;
 }
 
 .author-left,
@@ -184,4 +184,33 @@
 
 .author-right {
   text-align: right;
+}
+
+.progress-wrapper {
+  width: 500px;
+}
+
+.progress-top {
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  background-color: hsl(120, 60%, 95%);
+}
+
+.progress-form {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.progress-top input {
+  border: #77dd77 1px solid;
+  color: #333333;
+  font-family: 'Lato', 'Helvetica Neue', 'Helvetica', sans-serif;
+  background-color: #fff;
+}
+
+.progress-top input:focus {
+  outline: none;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }

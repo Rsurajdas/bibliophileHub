@@ -45,7 +45,7 @@ const Genre = () => {
 
   return (
     <main>
-      <section style={{ padding: '2rem 0 5rem' }}>
+      <section className="py-2 mb-2">
         {console.log(genres)}
         <Container>
           <Row>
@@ -101,6 +101,7 @@ const Genre = () => {
             </Col>
           </Row>
         </Container>
+        <ToastContainer position="bottom-left" />
       </section>
     </main>
   );

@@ -9,13 +9,14 @@ import { ToastContainer, toast } from 'react-toastify';
 import Table from '../Components/Table/Table';
 import Grid from '../Components/Layout/Grid';
 import './../Components/Btn/Button.css';
-import AddShelf from '../Components/AddShelf/AddShelf';
+import AddShelf from '../Components/Shelf/AddShelf';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MyBooks = () => {
   const [showTable, setShowTable] = useState(true);
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [shelves, setShelves] = useState();
+  const [shelves, setShelves] = useState([]);
   const token = useRouteLoaderData('token');
 
   const fetchBooks = async () => {
@@ -72,7 +73,7 @@ const MyBooks = () => {
             },
           }
         );
-        const data = await res.json();
+        await res.json();
         window.location.reload(true);
       } catch (err) {
         toast.error(err.message);
@@ -90,7 +91,8 @@ const MyBooks = () => {
 
   return (
     <main>
-      <section>
+      <section style={{ paddingBottom: '50px' }}>
+        {console.log(shelves)}
         <Container>
           <Row className="align-items-center border-bottom pt-3 pb-2">
             <Col md={6}>
@@ -163,7 +165,11 @@ const MyBooks = () => {
             <Col md={9}>
               {showTable ? (
                 <div className="book-table">
-                  <Table books={books} removeBook={removeBook} />
+                  <Table
+                    books={books}
+                    removeBook={removeBook}
+                    shelves={shelves}
+                  />
                 </div>
               ) : (
                 <div className="book-grid">
@@ -175,10 +181,13 @@ const MyBooks = () => {
                   >
                     {books &&
                       books.map((book) => (
-                        <div className="item" key={book._id}>
+                        <div className="item" key={book.book._id}>
                           <div className="item-img">
-                            <Link to={`/book/${book._id}`}>
-                              <img src={book.book_image} alt={book.title} />
+                            <Link to={`/book/${book.book._id}`}>
+                              <img
+                                src={book.book.book_image}
+                                alt={book.book.title}
+                              />
                             </Link>
                           </div>
                           <Link to="/edit" className="float-link">

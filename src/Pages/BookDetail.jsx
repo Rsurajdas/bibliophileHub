@@ -6,25 +6,29 @@ import {
   useRouteLoaderData,
   redirect,
 } from 'react-router-dom';
+import axios from 'axios';
 import Button from './../Components/Btn/Button';
 import Capitalize from 'lodash.capitalize';
 import PostBtn from '../Components/Post/PostBtn';
 import parse from 'html-react-parser';
+import Title from './../Components/UI/Title';
 import Rating from '@mui/material/Rating';
-import Modal from '@mui/joy/Modal';
-import ModalClose from '@mui/joy/ModalClose';
-import ModalDialog from '@mui/joy/ModalDialog';
-import Select from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
 import { ToastContainer, toast } from 'react-toastify';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from '@mui/material/Dialog';
 import './../Components/Post/Post.css';
 import './../Components/Btn/Button.css';
+import SelectSelf from '../Components/Shelf/SelectShelf';
 import 'react-toastify/dist/ReactToastify.css';
 
 const BookDetail = () => {
   const { book, user, shelves } = useLoaderData();
   const [isFollowing, setIsFollowing] = useState(false);
   const [isShelved, setIsShelved] = useState(false);
+  const [show, setShow] = useState(false);
+  const [saveRating, setSavRating] = useState(0);
   const [open, setOpen] = useState(false);
   const token = useRouteLoaderData('token');
 
@@ -33,12 +37,65 @@ const BookDetail = () => {
   }, []);
 
   useEffect(() => {
-    for (const shelf of shelves) {
-      if (shelf.books.includes(book._id)) {
-        setIsShelved(true);
+    const isBookInShelf = shelves.some((shelf) => {
+      return shelf.books.some((bookObj) => bookObj.book === book._id);
+    });
+
+    setIsShelved(isBookInShelf);
+  }, [book._id, shelves]);
+
+  useEffect(() => {
+    const fetchRating = async () => {
+      try {
+        const res = await axios.get(
+          `http://127.0.0.1:3000/api/v1/books/${book._id}/reviews`,
+          { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+        const { data } = res;
+
+        if (!res) {
+          setSavRating(0);
+        }
+
+        setSavRating(data.data.review.rating);
+      } catch (err) {
+        console.error(err.message);
       }
-    }
+    };
+    fetchRating();
   }, []);
+
+  const handleRating = async (e, newValue) => {
+    try {
+      if (!saveRating) {
+        const ratingData = {
+          rating: newValue,
+        };
+        const res = await axios.post(
+          `http://127.0.0.1:3000/api/v1/books/${book._id}/reviews`,
+          ratingData,
+          { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+        const { data } = res;
+        setSavRating(data.data.review.rating);
+        toast.success(`${newValue} star rating is saved`);
+      } else {
+        const ratingData = {
+          rating: newValue,
+        };
+        const res = await axios.patch(
+          `http://127.0.0.1:3000/api/v1/books/${book._id}/reviews`,
+          ratingData,
+          { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+        const { data } = res;
+        setSavRating(data.data.review.rating);
+        toast.success(`Rating updated to ${newValue} star rating`);
+      }
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
 
   const handleFollowToggle = async (id) => {
     if (!token) return redirect('/signin');
@@ -83,7 +140,7 @@ const BookDetail = () => {
         <Container>
           <Row>
             <Col md={3}>
-              <div className="detail-aside">
+              <div className="detail-aside text-center">
                 <div className="detail-img ">
                   <img src={book.book_image} alt={book.title} />
                 </div>
@@ -95,7 +152,7 @@ const BookDetail = () => {
                 />
                 <div
                   className="btn-wrapper"
-                  style={{ width: '250px', margin: '1rem auto' }}
+                  style={{ width: '250px', margin: '1rem auto 0.2rem' }}
                 >
                   <a
                     href={book.amazon_product_url}
@@ -107,6 +164,21 @@ const BookDetail = () => {
                     Buy on Amazon IN
                   </a>
                 </div>
+                <Button
+                  text="More Option"
+                  variant="text"
+                  type="button"
+                  sx={{ marginBottom: '1rem' }}
+                  onClick={() => setShow(true)}
+                />
+                <div className="book-rating">
+                  <Rating
+                    size="large"
+                    onChange={handleRating}
+                    value={saveRating}
+                  />
+                </div>
+                <Button type="button" variant="text" text="Rate this book" />
               </div>
             </Col>
             <Col md={9}>
@@ -123,17 +195,20 @@ const BookDetail = () => {
                   sx={{ padding: '8px', margin: '-8px -8px 0 -8px' }}
                 />
                 <div className="detail-content">{parse(book.description)}</div>
-                <ul className="detail-genres mb-4 border-bottom pb-4">
+                <ul
+                  className="detail-genres mb-4 border-bottom pb-4 mt-3"
+                  style={{ fontSize: '13px' }}
+                >
                   {book.genres.map((genre) => (
                     <li key={genre._id}>
-                      <Link to={genre.genre_name_encoded}>
+                      <Link to={`/genres/${genre._id}/${genre.genre_name}`}>
                         {genre.genre_name}
                       </Link>
                     </li>
                   ))}
                 </ul>
                 <div className="book-edition pb-4 border-bottom">
-                  <h6>This edition</h6>
+                  <Title element={<h6>This edition</h6>} />
                   <div className="edition-item">
                     <dt>Published</dt>
                     <dd>by {book.publisher}</dd>
@@ -145,28 +220,31 @@ const BookDetail = () => {
                     </dd>
                   </div>
                 </div>
-                <div className="author d-flex mt-4 border-bottom pb-4">
-                  <div className="author-left d-flex ">
-                    <div className="author-image">
-                      <img
-                        src={`http://127.0.0.1:3000${book.author.photo}`}
-                        alt=""
-                      />
-                    </div>
-                    <div className="author-details mt-1">
-                      <h6>{book.author.name}</h6>
-                      <div className="">
-                        {book.author.followers.length} followers
+                <div className="author  mt-4 border-bottom pb-4">
+                  <Title element={<h5 className="mb-3">About the author</h5>} />
+                  <div className="d-flex align-items-center">
+                    <div className="author-left d-flex align-items-center">
+                      <div className="author-image">
+                        <img
+                          src={`http://127.0.0.1:3000${book.author.photo}`}
+                          alt=""
+                        />
+                      </div>
+                      <div className="author-details">
+                        <h6>{book.author.name}</h6>
+                        <div className="">
+                          {book.author.followers.length} followers
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="author-right">
-                    <Button
-                      type="button"
-                      variant="solid"
-                      text={isFollowing ? 'Following' : 'Follow'}
-                      onClick={() => handleFollowToggle(book.author._id)}
-                    />
+                    <div className="author-right">
+                      <Button
+                        type="button"
+                        variant="solid"
+                        text={isFollowing ? 'Following' : 'Follow'}
+                        onClick={() => handleFollowToggle(book.author._id)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -174,33 +252,26 @@ const BookDetail = () => {
           </Row>
         </Container>
       </section>
-      <Modal open={open} onClose={() => setOpen(false)}>
-        <ModalDialog
-          aria-labelledby="size-modal-title"
-          aria-describedby="size-modal-description"
-          size="sm"
-        >
-          <ModalClose />
-          <div className="shelf-container">
-            <h6 className="mb-4">Choose a shelf for this book</h6>
-            <Select placeholder="Choose a shelf" onChange={handleAddToShelf}>
-              {shelves &&
-                shelves.map((shelf) => (
-                  <Option value={shelf._id} key={shelf._id}>
-                    {shelf.shelf_name}
-                  </Option>
-                ))}
-            </Select>
-            <Button
-              text="Done"
-              variant="outline"
-              onClick={() => setOpen(false)}
-              sx={{ marginTop: '10px' }}
-            />
-          </div>
-        </ModalDialog>
-      </Modal>
+      <SelectSelf
+        setOpen={setOpen}
+        shelves={shelves}
+        handleShelf={handleAddToShelf}
+        open={open}
+      />
       <ToastContainer position="bottom-left" />
+
+      <Dialog onClose={() => setShow(false)} open={show}>
+        <DialogTitle>Buy Links</DialogTitle>
+        <List>
+          {book.buy_links.map((link) => (
+            <ListItem key={link._id}>
+              <a href={link.url} target="_blank" rel="noopener noreferrer">
+                {link.name}
+              </a>
+            </ListItem>
+          ))}
+        </List>
+      </Dialog>
     </main>
   );
 };
