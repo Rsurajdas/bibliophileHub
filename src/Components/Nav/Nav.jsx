@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import NavItems from './NavItems';
 import NavList from './NavList';
 import SearchField from './SearchField';
+import { Avatar } from '@mui/material';
 import './Nav.css';
 
 function Navigation({ user }) {
@@ -31,10 +32,14 @@ function Navigation({ user }) {
                 <img src="/images/icn_nav_friend.svg" alt="profile image" />
               </div>
               <div className="nav-icon">
-                <img
+                <Avatar
+                  alt={user.name}
+                  src={`http://127.0.0.1:3000${user.photo}`}
+                />
+                {/* <img
                   src={`http://127.0.0.1:3000${user.photo}`}
                   alt={user.name}
-                />
+                /> */}
                 <div className="dropdown-wrapper">
                   <ul>
                     <fieldset>

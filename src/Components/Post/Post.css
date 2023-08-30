@@ -209,3 +209,24 @@
   width: 100%;
   text-align: left;
 }
+.post-comments {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.post-comments li {
+  border-bottom: 1px solid #d8d8d8;
+  padding: 8px;
+}
+.comment-body {
+  display: flex;
+  gap: 2%;
+}
+.comment-body .user-name {
+  font-size: 14px;
+  margin: 0;
+  font-weight: 700;
+}
+.user-comment {
+  font-size: 14px;
+}

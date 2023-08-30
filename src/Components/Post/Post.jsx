@@ -1,17 +1,23 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { getUserData } from '../../store/actions/userAction';
 import { Avatar, Rating } from '@mui/material';
 import { getUserId } from '../../utils/auth';
 import { Link, useRouteLoaderData } from 'react-router-dom';
 import PostBtn from './PostBtn';
 import Button from '../Btn/Button';
+import axios from 'axios';
 import './Post.css';
 
 const Post = ({ post }) => {
   const [liked, setLiked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const token = useRouteLoaderData('token');
+  const [postComments, setPostComments] = useState(post.comments);
   const userId = getUserId();
+  const commentRef = useRef(null);
+  const dispatch = useDispatch();
 
   const handleLike = async (postId, user_id) => {
     const res = await fetch(
@@ -27,6 +33,46 @@ const Post = ({ post }) => {
     setIsLoading(false);
     setLiked(data.post.likes.includes(user_id));
   };
+
+  const handleRemoveLike = async (postId, user_id) => {
+    const res = await fetch(
+      `http://127.0.0.1:3000/api/v1/posts/${postId}/unlike`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await res.json();
+    setIsLoading(false);
+    setLiked(data.post.likes.includes(user_id));
+  };
+
+  const handleComment = (postId, user_id) => {
+    return async (e) => {
+      e.preventDefault();
+      const comment = {
+        user: user_id,
+        text: commentRef.current.value,
+      };
+      const res = await axios.post(
+        `http://127.0.0.1:3000/api/v1/posts/${postId}/add-comment`,
+        comment,
+        { headers: { 'Authorization': `Bearer ${token}` } }
+      );
+      const { data } = res;
+      console.log(data.post.comments);
+      setPostComments(data.post.comments);
+      commentRef.current.value = '';
+    };
+  };
+
+  useEffect(() => {
+    dispatch(getUserData());
+  }, [dispatch]);
+
+  const { user } = useSelector((state) => state.user, shallowEqual);
 
   useEffect(() => {
     setLiked(post.likes.includes(userId));
@@ -73,33 +119,62 @@ const Post = ({ post }) => {
             </div>
           </div>
           <div className="post-activity">
-            <Button
-              type="button"
-              variant="text"
-              text={`${liked ? 'Unlike' : 'Like'}`}
-              onClick={() => handleLike(post._id, userId)}
-            />{' '}
+            {!liked ? (
+              <Button
+                type="button"
+                variant="text"
+                text={`${liked ? 'Unlike' : 'Like'}`}
+                onClick={() => handleLike(post._id, userId)}
+              />
+            ) : (
+              <Button
+                type="button"
+                variant="text"
+                text={`${liked ? 'Unlike' : 'Like'}`}
+                onClick={() => handleRemoveLike(post._id, userId)}
+              />
+            )}{' '}
             | <Button type="button" variant="text" text="Comment" />
           </div>
         </div>
         <div className="post-footer">
           {liked && <div className="post-liked">You liked this</div>}
+          {postComments && (
+            <ul className="post-comments">
+              {postComments.map((comment) => (
+                <li key={comment._id}>
+                  <div className="comment-body">
+                    <Avatar
+                      alt={comment.user.name}
+                      src={`http://127.0.0.1:3000${comment.user.photo}`}
+                    />
+                    <div className="comment-user">
+                      <h6 className="user-name mb-1">{comment.user.name}</h6>
+                      <div className="user-comment">{comment.text}</div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
           <div className="post-comment">
             <Avatar
-              alt={post.user.name}
-              src={`http://127.0.0.1:3000${post.user.photo}`}
+              alt={user.name}
+              src={`http://127.0.0.1:3000${user.photo}`}
             />
-            <form>
-              <div className="form-group">
+            <form method="post" onSubmit={handleComment(post._id, userId)}>
+              <div className="form-group d-flex" style={{ gap: '2%' }}>
                 <textarea
                   name="comment"
                   id="comment"
                   style={{ height: '40px' }}
+                  ref={commentRef}
                 ></textarea>
                 <Button
                   variant="solid"
                   text="comment"
                   sx={{ padding: '3px 10px' }}
+                  type="submit"
                 />
               </div>
             </form>
