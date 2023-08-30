@@ -1,6 +1,6 @@
 import { Col, Container, Row } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
-import { useRouteLoaderData } from 'react-router-dom';
+import { useRouteLoaderData, useLoaderData } from 'react-router-dom';
 import Post from '../Components/Post/Post';
 import Title from './../Components/UI/Title';
 import CurrentlyReading from '../Components/Book/CurrentlyReading';
@@ -9,6 +9,7 @@ const Home = () => {
   const [reading, setReading] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const token = useRouteLoaderData('token');
+  const posts = useLoaderData();
 
   const fetchReading = async () => {
     const res = await fetch(
@@ -45,8 +46,7 @@ const Home = () => {
             </div>
           </Col>
           <Col md={6}>
-            <Post />
-            <Post />
+            {posts && posts.map((post) => <Post key={post._id} post={post} />)}
           </Col>
           <Col md={3}></Col>
         </Row>

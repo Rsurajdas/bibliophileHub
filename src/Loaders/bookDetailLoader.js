@@ -5,7 +5,12 @@ export const bookDetailLoader = async ({ params }) => {
   const token = getAuthToken();
 
   // fetch Book
-  const bookJson = await fetch(`http://127.0.0.1:3000/api/v1/books/${id}`);
+  const bookJson = await fetch(`http://127.0.0.1:3000/api/v1/books/${id}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
   const bookData = await bookJson.json();
 
   // fetch User
@@ -28,6 +33,7 @@ export const bookDetailLoader = async ({ params }) => {
 
   return {
     book: bookData.data.book,
+    review: bookData.data.review,
     user: userData.data.user,
     shelves: shelvesData.data.shelves,
   };

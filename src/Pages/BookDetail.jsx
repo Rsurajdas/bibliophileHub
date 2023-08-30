@@ -24,7 +24,7 @@ import SelectSelf from '../Components/Shelf/SelectShelf';
 import 'react-toastify/dist/ReactToastify.css';
 
 const BookDetail = () => {
-  const { book, user, shelves } = useLoaderData();
+  const { book, review, user, shelves } = useLoaderData();
   const [isFollowing, setIsFollowing] = useState(false);
   const [isShelved, setIsShelved] = useState(false);
   const [show, setShow] = useState(false);
@@ -45,25 +45,12 @@ const BookDetail = () => {
   }, [book._id, shelves]);
 
   useEffect(() => {
-    const fetchRating = async () => {
-      try {
-        const res = await axios.get(
-          `http://127.0.0.1:3000/api/v1/books/${book._id}/reviews`,
-          { headers: { 'Authorization': `Bearer ${token}` } }
-        );
-        const { data } = res;
-
-        if (!res) {
-          setSavRating(0);
-        }
-
-        setSavRating(data.data.review.rating);
-      } catch (err) {
-        console.error(err.message);
-      }
-    };
-    fetchRating();
-  }, []);
+    if (review[0]?.rating) {
+      setSavRating(review[0].rating);
+    } else {
+      setSavRating(0);
+    }
+  }, [review]);
 
   const handleRating = async (e, newValue) => {
     try {
@@ -137,6 +124,7 @@ const BookDetail = () => {
   return (
     <main>
       <section style={{ padding: '20px 0' }}>
+        {console.log(review)}
         <Container>
           <Row>
             <Col md={3}>
@@ -172,6 +160,13 @@ const BookDetail = () => {
                   onClick={() => setShow(true)}
                 />
                 <div className="book-rating">
+                  {/* {book.reviews.length < 0 && (
+                    <Rating
+                      size="large"
+                      onChange={handleRating}
+                      value={book.reviews[0].rating}
+                    />
+                  )} */}
                   <Rating
                     size="large"
                     onChange={handleRating}

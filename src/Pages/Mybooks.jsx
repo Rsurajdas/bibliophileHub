@@ -17,6 +17,8 @@ const MyBooks = () => {
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [shelves, setShelves] = useState([]);
+  const [shelfId, setSelfId] = useState('');
+  const [shelfName, setShelfName] = useState('');
   const token = useRouteLoaderData('token');
 
   const fetchBooks = async () => {
@@ -55,6 +57,8 @@ const MyBooks = () => {
     });
     const data = await res.json();
     setIsLoading(false);
+    setSelfId(data.data.shelf._id);
+    setShelfName(data.data.shelf.shelf_name);
     setBooks(data.data.shelf.books);
   };
 
@@ -92,7 +96,6 @@ const MyBooks = () => {
   return (
     <main>
       <section style={{ paddingBottom: '50px' }}>
-        {console.log(shelves)}
         <Container>
           <Row className="align-items-center border-bottom pt-3 pb-2">
             <Col md={6}>
@@ -169,6 +172,8 @@ const MyBooks = () => {
                     books={books}
                     removeBook={removeBook}
                     shelves={shelves}
+                    shelfId={shelfId}
+                    shelfName={shelfName}
                   />
                 </div>
               ) : (

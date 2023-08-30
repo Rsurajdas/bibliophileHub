@@ -38,7 +38,6 @@ const Genres = () => {
       <Container>
         <Row>
           <Col md={8}>
-            {console.log(data)}
             {isLoading && <p>Loading...</p>}
             {!isLoading &&
               data.map((genre) => (

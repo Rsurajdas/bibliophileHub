@@ -9,7 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Table.css';
 
-const Table = ({ books, removeBook, shelves }) => {
+const Table = ({ books, removeBook, shelves, shelfId, shelfName }) => {
   const [open, setOpen] = useState(false);
   const token = useRouteLoaderData('token');
 
@@ -97,7 +97,7 @@ const Table = ({ books, removeBook, shelves }) => {
                   }}
                 >
                   <div>
-                    {book.book.shelf[0].shelf_name}{' '}
+                    {!shelfName ? book.shelves[0].shelf_name : shelfName}{' '}
                     <Button
                       text="[edit]"
                       variant="text"
@@ -110,24 +110,42 @@ const Table = ({ books, removeBook, shelves }) => {
                   <Link to="/">Write Review</Link>
                 </td>
                 <td>
-                  <Button
-                    variant="text"
-                    text="X"
-                    onClick={() =>
-                      removeBook(book.book.shelf[0]._id, book.book._id)
-                    }
-                  />
-                </td>
-                <SelectSelf
-                  open={open}
-                  shelves={shelves}
-                  setOpen={setOpen}
-                  handleShelf={handleUpdateShelf(
-                    book.book.shelf[0]._id,
-                    book.book._id
+                  {!shelfId ? (
+                    <Button
+                      variant="text"
+                      text="X"
+                      onClick={() =>
+                        removeBook(book.shelves[0].shelf_id, book.book._id)
+                      }
+                    />
+                  ) : (
+                    <Button
+                      variant="text"
+                      text="X"
+                      onClick={() => removeBook(shelfId, book.book._id)}
+                    />
                   )}
-                  key={idx}
-                />
+                </td>
+                {!shelfId ? (
+                  <SelectSelf
+                    open={open}
+                    shelves={shelves}
+                    setOpen={setOpen}
+                    handleShelf={handleUpdateShelf(
+                      book.shelves[0].shelf_id,
+                      book.book._id
+                    )}
+                    key={idx}
+                  />
+                ) : (
+                  <SelectSelf
+                    open={open}
+                    shelves={shelves}
+                    setOpen={setOpen}
+                    handleShelf={handleUpdateShelf(shelfId, book.book._id)}
+                    key={idx}
+                  />
+                )}
               </tr>
             ))}
           {books.length === 0 && (
@@ -149,6 +167,8 @@ Table.propTypes = {
   books: PropTypes.array,
   removeBook: PropTypes.func,
   shelves: PropTypes.array,
+  shelfId: PropTypes.string,
+  shelfName: PropTypes.string,
 };
 
 export default Table;

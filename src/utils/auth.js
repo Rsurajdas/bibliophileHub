@@ -10,7 +10,7 @@ export const tokenLoader = () => {
   else return '';
 };
 
-export const userId = () => cookie.get('userId');
+export const getUserId = () => cookie.get('userId');
 
 export const checkAuthLoader = () => {
   if (!getAuthToken()) return redirect('/signin');

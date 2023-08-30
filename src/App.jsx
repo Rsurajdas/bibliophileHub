@@ -6,6 +6,9 @@ import { authAction } from './Actions/authAction';
 import { signUpAction } from './Actions/signUpAction';
 import { bookDetailLoader } from './Loaders/bookDetailLoader';
 import { checkAuthLoader, tokenLoader } from './utils/auth';
+import { signOut } from './Pages/SignOut';
+import AuthRootLayout from './AuthLayout';
+import { homeLoader } from './Loaders/homeLoader';
 const Genres = lazy(() => import('./Pages/Genres'));
 const Home = lazy(() => import('./Pages/Home'));
 const Genre = lazy(() => import('./Pages/Genre'));
@@ -28,6 +31,7 @@ const router = createBrowserRouter([
             <Home />
           </Suspense>
         ),
+        loader: homeLoader,
       },
       {
         path: '/mybooks',
@@ -75,24 +79,32 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: '/signin',
-    element: (
-      <Suspense>
-        <SignIn />
-      </Suspense>
-    ),
-    action: authAction,
-    loader: checkAuthLoader,
-  },
-  {
-    path: '/signup',
-    element: (
-      <Suspense>
-        <SignUp />
-      </Suspense>
-    ),
-    action: signUpAction,
-    loader: checkAuthLoader,
+    path: '/',
+    element: <AuthRootLayout />,
+    children: [
+      {
+        path: '/signin',
+        element: (
+          <Suspense>
+            <SignIn />
+          </Suspense>
+        ),
+        action: authAction,
+      },
+      {
+        path: '/signup',
+        element: (
+          <Suspense>
+            <SignUp />
+          </Suspense>
+        ),
+        action: signUpAction,
+      },
+      {
+        path: '/signout',
+        action: signOut,
+      },
+    ],
   },
 ]);
 
