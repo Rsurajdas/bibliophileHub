@@ -62,7 +62,6 @@ const Post = ({ post }) => {
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
       const { data } = res;
-      console.log(data.post.comments);
       setPostComments(data.post.comments);
       commentRef.current.value = '';
     };

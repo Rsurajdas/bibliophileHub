@@ -12,18 +12,22 @@ const Home = () => {
   const posts = useLoaderData();
 
   const fetchReading = async () => {
-    const res = await fetch(
-      'http://127.0.0.1:3000/api/v1/shelf/get-currently-reading/books',
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      }
-    );
-    const data = await res.json();
-    setIsLoading(false);
-    setReading(data.data.books);
+    try {
+      const res = await fetch(
+        'http://127.0.0.1:3000/api/v1/shelf/get-currently-reading/books',
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await res.json();
+      setIsLoading(false);
+      setReading(data.data.books);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {

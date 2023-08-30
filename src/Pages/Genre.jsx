@@ -46,7 +46,6 @@ const Genre = () => {
   return (
     <main>
       <section className="py-2 mb-2">
-        {console.log(genres)}
         <Container>
           <Row>
             <Col md={9}>

@@ -18,9 +18,9 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
+import SelectSelf from '../Components/Shelf/SelectShelf';
 import './../Components/Post/Post.css';
 import './../Components/Btn/Button.css';
-import SelectSelf from '../Components/Shelf/SelectShelf';
 import 'react-toastify/dist/ReactToastify.css';
 
 const BookDetail = () => {
@@ -33,7 +33,10 @@ const BookDetail = () => {
   const token = useRouteLoaderData('token');
 
   useEffect(() => {
-    setIsFollowing(user.following.includes(book.author._id));
+    const isFollowing = user.following.some(
+      (userObj) => userObj._id === book.author._id
+    );
+    setIsFollowing(isFollowing);
   }, []);
 
   useEffect(() => {
@@ -85,21 +88,26 @@ const BookDetail = () => {
   };
 
   const handleFollowToggle = async (id) => {
-    if (!token) return redirect('/signin');
+    try {
+      if (!token) return redirect('/signin');
 
-    const action = isFollowing ? 'unfollow' : 'follow';
-    const res = await fetch(
-      `http://127.0.0.1:3000/api/v1/users/${action}/${id}`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      }
-    );
-    await res.json();
-    setIsFollowing(!isFollowing);
-    window.location.reload(true);
+      const action = isFollowing ? 'unfollow' : 'follow';
+      const res = await fetch(
+        `http://127.0.0.1:3000/api/v1/users/${action}/${id}`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+      await res.json();
+      setIsFollowing(!isFollowing);
+      // window.location.reload(true);
+      toast.success(res.message);
+    } catch (err) {
+      toast.error(err.message);
+    }
   };
 
   const handleAddToShelf = async (evt, newValue) => {
@@ -124,7 +132,6 @@ const BookDetail = () => {
   return (
     <main>
       <section style={{ padding: '20px 0' }}>
-        {console.log(review)}
         <Container>
           <Row>
             <Col md={3}>
@@ -160,13 +167,6 @@ const BookDetail = () => {
                   onClick={() => setShow(true)}
                 />
                 <div className="book-rating">
-                  {/* {book.reviews.length < 0 && (
-                    <Rating
-                      size="large"
-                      onChange={handleRating}
-                      value={book.reviews[0].rating}
-                    />
-                  )} */}
                   <Rating
                     size="large"
                     onChange={handleRating}

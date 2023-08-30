@@ -214,3 +214,27 @@
   outline: none;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
+
+.friends-wrapper ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.friends-wrapper ul li {
+  padding: 0 10px 10px;
+  border-bottom: 1px solid #d8d8d8;
+  margin-bottom: 10px;
+}
+.friend-img {
+  width: 70px;
+}
+.friend-left,
+.friend-item {
+  display: flex;
+}
+.friend-left {
+  gap: 2%;
+}
+.friend-item {
+  justify-content: space-between;
+}
