@@ -62,6 +62,7 @@ const Post = ({ post }) => {
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
       const { data } = res;
+      console.log(data.post.comments);
       setPostComments(data.post.comments);
       commentRef.current.value = '';
     };
@@ -81,10 +82,12 @@ const Post = ({ post }) => {
     <>
       <div className="post">
         <div className="post-avatar">
-          <Avatar
-            alt={post.user.name}
-            src={`http://127.0.0.1:3000${post.user.photo}`}
-          />
+          <Link to={`/profile/${post.user._id}`}>
+            <Avatar
+              alt={post.user.name}
+              src={`http://127.0.0.1:3000${post.user.photo}`}
+            />
+          </Link>
         </div>
         <div className="post-header">
           <div className="post-by mb-2">
@@ -148,7 +151,11 @@ const Post = ({ post }) => {
                       src={`http://127.0.0.1:3000${comment.user.photo}`}
                     />
                     <div className="comment-user">
-                      <h6 className="user-name mb-1">{comment.user.name}</h6>
+                      <h6 className="user-name mb-1">
+                        <Link to={`/profile/${comment.user._id}`}>
+                          {comment.user.name}
+                        </Link>
+                      </h6>
                       <div className="user-comment">{comment.text}</div>
                     </div>
                   </div>

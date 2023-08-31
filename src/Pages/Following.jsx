@@ -4,16 +4,16 @@ import Title from '../Components/UI/Title';
 import { Link, useRouteLoaderData, useParams } from 'react-router-dom';
 import Button from '../Components/Btn/Button';
 
-const Friends = () => {
-  const [friends, setFriends] = useState([]);
+const Following = () => {
+  const [following, setFollowing] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const token = useRouteLoaderData('token');
   const { profileId } = useParams();
 
-  const fetchFriends = async () => {
+  const fetchFollowing = async () => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/users/friends/${profileId}`,
+        `http://127.0.0.1:3000/api/v1/users/following/${profileId}`,
         {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${token}` },
@@ -21,14 +21,14 @@ const Friends = () => {
       );
       const data = await res.json();
       setIsLoading(false);
-      setFriends(data.data.friends);
+      setFollowing(data.data.following);
     } catch (err) {
       console.error(err);
     }
   };
 
   useEffect(() => {
-    fetchFriends();
+    fetchFollowing();
   }, []);
 
   return (
@@ -55,7 +55,7 @@ const Friends = () => {
                     />
                     <ul>
                       {!isLoading &&
-                        friends.map((friend) => (
+                        following.map((friend) => (
                           <li key={friend._id}>
                             <div className="friend-item">
                               <div className="friend-left">
@@ -82,7 +82,7 @@ const Friends = () => {
                                 </div>
                               </div>
                               <div className="friend-right">
-                                <Button text="unfriend" variant="solid" />
+                                <Button text="unfollow" variant="solid" />
                               </div>
                             </div>
                           </li>
@@ -118,4 +118,4 @@ const Friends = () => {
   );
 };
 
-export default Friends;
+export default Following;

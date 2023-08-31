@@ -4,17 +4,19 @@ import { useRouteLoaderData, useLoaderData } from 'react-router-dom';
 import Post from '../Components/Post/Post';
 import Title from './../Components/UI/Title';
 import CurrentlyReading from '../Components/Book/CurrentlyReading';
+import { getUserId } from '../utils/auth';
 
 const Home = () => {
   const [reading, setReading] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const token = useRouteLoaderData('token');
   const posts = useLoaderData();
+  const userId = getUserId();
 
   const fetchReading = async () => {
     try {
       const res = await fetch(
-        'http://127.0.0.1:3000/api/v1/shelf/get-currently-reading/books',
+        `http://127.0.0.1:3000/api/v1/shelf/get-currently-reading/books/${userId}`,
         {
           method: 'GET',
           headers: {

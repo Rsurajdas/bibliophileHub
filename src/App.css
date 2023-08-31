@@ -238,3 +238,13 @@
 .friend-item {
   justify-content: space-between;
 }
+.friends-link a:hover {
+  text-decoration: underline;
+}
+.user-name a {
+  color: #2a2a2a;
+  transition: 0.3s;
+}
+.user-name a:hover {
+  text-decoration: underline;
+}

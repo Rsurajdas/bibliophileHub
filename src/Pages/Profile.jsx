@@ -1,40 +1,59 @@
 import { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Avatar, AvatarGroup } from '@mui/material';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { getUserData } from '../store/actions/userAction';
-import { Link, useRouteLoaderData } from 'react-router-dom';
+import { Link, useRouteLoaderData, useParams } from 'react-router-dom';
 import Post from '../Components/Post/Post';
 import Title from '../Components/UI/Title';
 import CurrentlyReading from '../Components/Book/CurrentlyReading';
 import './../Components/Nav/Search.css';
 
 const Profile = () => {
-  const dispatch = useDispatch();
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [reading, setReading] = useState([]);
   const token = useRouteLoaderData('token');
+  const [user, setUser] = useState({});
+  let { profileId } = useParams();
 
-  useEffect(() => {
-    dispatch(getUserData());
-  }, [dispatch]);
-
-  const { user } = useSelector((state) => state.user, shallowEqual);
+  const fetchUser = async () => {
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:3000/api/v1/users/get-user/${profileId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await res.json();
+      setIsLoading(false);
+      setUser(data.data.user);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
   const fetchPosts = async () => {
-    const res = await fetch('http://127.0.0.1:3000/api/v1/posts/', {
-      method: 'GET',
-      headers: { 'Authorization': `Bearer ${token}` },
-    });
-    const data = await res.json();
-    setIsLoading(false);
-    setPosts(data.data.posts);
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:3000/api/v1/posts/get-posts/${profileId}`,
+        {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${token}` },
+        }
+      );
+      const data = await res.json();
+      setIsLoading(false);
+      setPosts(data.data.posts);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   const fetchReading = async () => {
     const res = await fetch(
-      'http://127.0.0.1:3000/api/v1/shelf/get-currently-reading/books',
+      `http://127.0.0.1:3000/api/v1/shelf/get-currently-reading/books/${profileId}`,
       {
         method: 'GET',
         headers: {
@@ -53,6 +72,10 @@ const Profile = () => {
 
   useEffect(() => {
     fetchPosts();
+  }, []);
+
+  useEffect(() => {
+    fetchUser();
   }, []);
 
   return (
@@ -81,19 +104,19 @@ const Profile = () => {
                         </div>
                         <div className="">
                           <span style={{ fontWeight: 700 }}>Friends:</span>{' '}
-                          <Link to="/friends">
+                          <Link to={`/friends/${user._id}`}>
                             {user.friends?.length} friends
                           </Link>
                         </div>
                         <div className="">
                           <span style={{ fontWeight: 700 }}>Followers:</span>{' '}
-                          <Link to="/followers">
+                          <Link to={`/followers`}>
                             {user.followers?.length} followers
                           </Link>
                         </div>
                         <div className="">
                           <span style={{ fontWeight: 700 }}>Following:</span>{' '}
-                          <Link to="/following">
+                          <Link to={`/following/${user._id}`}>
                             {user.following?.length} following
                           </Link>
                         </div>

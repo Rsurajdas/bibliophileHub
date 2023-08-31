@@ -36,16 +36,12 @@ function Navigation({ user }) {
                   alt={user.name}
                   src={`http://127.0.0.1:3000${user.photo}`}
                 />
-                {/* <img
-                  src={`http://127.0.0.1:3000${user.photo}`}
-                  alt={user.name}
-                /> */}
                 <div className="dropdown-wrapper">
                   <ul>
                     <fieldset>
                       <legend>{user.name}</legend>
                       <li>
-                        <Link to="/profile">Profile</Link>
+                        <Link to={`/profile/${user._id}`}>Profile</Link>
                       </li>
                       <li>
                         <Link to="/friends">Friends</Link>

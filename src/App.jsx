@@ -18,6 +18,7 @@ const SignUp = lazy(() => import('./Pages/SignUp'));
 const BookDetail = lazy(() => import('./Pages/BookDetail'));
 const Profile = lazy(() => import('./Pages/Profile'));
 const Friends = lazy(() => import('./Pages/Friends'));
+const Following = lazy(() => import('./Pages/Following'));
 
 const router = createBrowserRouter([
   {
@@ -42,12 +43,38 @@ const router = createBrowserRouter([
             <Profile />
           </Suspense>
         ),
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense>
+                <Profile />
+              </Suspense>
+            ),
+          },
+          {
+            path: ':profileId',
+            element: (
+              <Suspense>
+                <Profile />
+              </Suspense>
+            ),
+          },
+        ],
       },
       {
-        path: '/friends',
+        path: '/friends/:profileId',
         element: (
           <Suspense>
             <Friends />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/following/:profileId',
+        element: (
+          <Suspense>
+            <Following />
           </Suspense>
         ),
       },
