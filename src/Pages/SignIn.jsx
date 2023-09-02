@@ -1,11 +1,52 @@
-import { Form, useActionData, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'universal-cookie';
 import { Container, Row, Col } from 'react-bootstrap';
 import FormInput from '../Components/Form/FormInput';
 import Button from '../Components/Btn/Button';
 import ErrorMessage from '../Components/Error/ErrorMessage';
+import { useState } from 'react';
 
 const SignIn = () => {
-  const data = useActionData();
+  const [data, setData] = useState();
+  const cookie = new Cookies();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const credentials = {
+      email: e.target.email.value,
+      password: e.target.password.value,
+    };
+    const res = await fetch(
+      'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/login',
+      {
+        method: 'POST',
+        body: JSON.stringify(credentials),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    if (res.status === 401) {
+      return res;
+    }
+    const data = await res.json();
+    setData(data);
+    const token = data.token;
+    const userId = data.data.user._id;
+
+    if (token && userId) {
+      cookie.set('token', token, {
+        path: '/',
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      });
+      cookie.set('userId', userId, {
+        path: '/',
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      });
+    }
+    navigate(`/profile/${userId}`);
+  };
   return (
     <section>
       <Container>
@@ -19,10 +60,12 @@ const SignIn = () => {
                     alt="bibliophile hub logo"
                   />
                 </div>
-                {data && <ErrorMessage message={data.message} />}
+                {data?.status === 'fail' && (
+                  <ErrorMessage message={data.message} />
+                )}
                 <h1>Sign in</h1>
               </div>
-              <Form method="POST">
+              <form method="post" onSubmit={handleSubmit}>
                 <div className="form-group">
                   <FormInput
                     fieldName="Email"
@@ -54,7 +97,7 @@ const SignIn = () => {
                   rounded={true}
                   sx={{ width: '100%', marginTop: '10px' }}
                 />
-              </Form>
+              </form>
               <small className="d-block mt-3">
                 By signing in, you agree to the Bibliophile Hub{' '}
                 <Link to="/">Terms of Service</Link> and{' '}
