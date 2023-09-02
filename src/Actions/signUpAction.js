@@ -12,13 +12,16 @@ export const signUpAction = async ({ request }) => {
     confirmPassword: formData.get('confirmPassword'),
   };
 
-  const res = await fetch('http://127.0.0.1:3000/api/v1/users/signup', {
-    method: 'POST',
-    body: JSON.stringify(userData),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  const res = await fetch(
+    'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/signup',
+    {
+      method: 'POST',
+      body: JSON.stringify(userData),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
 
   const data = await res.json();
 

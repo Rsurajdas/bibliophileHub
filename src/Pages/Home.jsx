@@ -1,6 +1,6 @@
 import { Col, Container, Row } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
-import { useRouteLoaderData, useLoaderData } from 'react-router-dom';
+import { useRouteLoaderData } from 'react-router-dom';
 import Post from '../Components/Post/Post';
 import Title from './../Components/UI/Title';
 import CurrentlyReading from '../Components/Book/CurrentlyReading';
@@ -10,13 +10,32 @@ const Home = () => {
   const [reading, setReading] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const token = useRouteLoaderData('token');
-  const posts = useLoaderData();
+  const [posts, setPosts] = useState([]);
   const userId = getUserId();
+
+  const fetchSocialPost = async () => {
+    try {
+      const res = await fetch(
+        'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/posts/social-posts',
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await res.json();
+      setIsLoading(false);
+      setPosts(data.data.posts);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
   const fetchReading = async () => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/shelf/get-currently-reading/books/${userId}`,
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/get-currently-reading/books/${userId}`,
         {
           method: 'GET',
           headers: {
@@ -34,6 +53,10 @@ const Home = () => {
 
   useEffect(() => {
     fetchReading();
+  }, []);
+
+  useEffect(() => {
+    fetchSocialPost();
   }, []);
 
   return (

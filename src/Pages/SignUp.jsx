@@ -115,7 +115,7 @@ const SignIn = () => {
                 By creating an account, you agree to the Bibliophile Hub{' '}
                 <Link>Terms of Service</Link> and <Link>Privacy Policy</Link>
               </small>
-              <div className="mt-4">
+              <div className="mt-4 text-center">
                 Already have an account? <Link to="/signin">Sign in</Link>
               </div>
             </div>

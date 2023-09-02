@@ -33,7 +33,7 @@ const CurrentlyReading = ({ book, currentUser }) => {
         readingProgress: Number(progressRef.current.value),
       };
       const res = await axios.patch(
-        `http://127.0.0.1:3000/api/v1/shelf/update-progress/${bookId}`,
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/update-progress/${bookId}`,
         readingProgressData,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
@@ -51,7 +51,7 @@ const CurrentlyReading = ({ book, currentUser }) => {
         readingProgress: 100,
       };
       const res = await axios.patch(
-        `http://127.0.0.1:3000/api/v1/shelf/update-progress/${bookId}`,
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/update-progress/${bookId}`,
         readingProgressData,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );

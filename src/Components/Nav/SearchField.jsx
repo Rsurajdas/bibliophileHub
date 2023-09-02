@@ -8,7 +8,7 @@ const SearchField = ({ sx }) => {
 
   const fetchSearchResult = async () => {
     const res = await fetch(
-      `http://127.0.0.1:3000/api/v1/books/search?title=${searchRef.current.value.toUpperCase()}`
+      `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/search?title=${searchRef.current.value.toUpperCase()}`
     );
     const data = await res.json();
     setResults(data.data.books);

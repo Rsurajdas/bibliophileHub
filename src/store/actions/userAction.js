@@ -6,7 +6,7 @@ export const getUserData = () => async (dispatch) => {
   const userId = getUserId();
   const fetchUser = async () => {
     const res = await fetch(
-      `http://127.0.0.1:3000/api/v1/users/get-user/${userId}`,
+      `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/get-user/${userId}`,
       {
         method: 'GET',
         headers: {

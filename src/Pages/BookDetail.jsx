@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import {
-  useLoaderData,
-  Link,
-  useRouteLoaderData,
-  redirect,
-} from 'react-router-dom';
+import { useLoaderData, Link, useRouteLoaderData } from 'react-router-dom';
 import axios from 'axios';
 import Button from './../Components/Btn/Button';
 import Capitalize from 'lodash.capitalize';
@@ -62,7 +57,7 @@ const BookDetail = () => {
           rating: newValue,
         };
         const res = await axios.post(
-          `http://127.0.0.1:3000/api/v1/books/${book._id}/reviews`,
+          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/${book._id}/reviews`,
           ratingData,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
@@ -74,7 +69,7 @@ const BookDetail = () => {
           rating: newValue,
         };
         const res = await axios.patch(
-          `http://127.0.0.1:3000/api/v1/books/${book._id}/reviews`,
+          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/${book._id}/reviews`,
           ratingData,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
@@ -89,11 +84,9 @@ const BookDetail = () => {
 
   const handleFollowToggle = async (id) => {
     try {
-      if (!token) return redirect('/signin');
-
       const action = isFollowing ? 'unfollow' : 'follow';
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/users/${action}/${id}`,
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/${action}/${id}`,
         {
           method: 'POST',
           headers: {
@@ -113,7 +106,7 @@ const BookDetail = () => {
   const handleAddToShelf = async (evt, newValue) => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/shelf/add-book/${newValue}/${book._id}`,
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/add-book/${newValue}/${book._id}`,
         {
           method: 'POST',
           headers: {
@@ -220,10 +213,7 @@ const BookDetail = () => {
                   <div className="d-flex align-items-center">
                     <div className="author-left d-flex align-items-center">
                       <div className="author-image">
-                        <img
-                          src={`http://127.0.0.1:3000${book.author.photo}`}
-                          alt=""
-                        />
+                        <img src={`${book.author.photo}`} alt="" />
                       </div>
                       <div className="author-details">
                         <h6>{book.author.name}</h6>

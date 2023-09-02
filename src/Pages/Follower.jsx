@@ -4,7 +4,7 @@ import Title from '../Components/UI/Title';
 import { Link, useRouteLoaderData, useParams } from 'react-router-dom';
 import ProfileList from '../Components/Profile/ProfileList';
 
-const Friends = () => {
+const Followers = () => {
   const [friends, setFriends] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const token = useRouteLoaderData('token');
@@ -13,7 +13,7 @@ const Friends = () => {
   const fetchFriends = async (id) => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/users/followers/${id}`,
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/followers/${id}`,
         {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${token}` },
@@ -35,7 +35,6 @@ const Friends = () => {
     <main>
       <section className="py-5">
         <Container>
-          {console.log(friends)}
           <Row>
             <Col md={10} className="mx-auto">
               <Row className="gx-5">
@@ -60,7 +59,7 @@ const Friends = () => {
                           <ProfileList
                             key={friend._id}
                             profile={friend}
-                            btnName="unfriend"
+                            btnName="following"
                           />
                         ))}
                     </ul>
@@ -85,7 +84,7 @@ const Friends = () => {
                       </Link>
                     </div>
                     <div className="">
-                      <Link to="/add-friends" style={{ color: '#2a2a2a' }}>
+                      <Link to="/add-friend" style={{ color: '#2a2a2a' }}>
                         Add friends
                       </Link>
                     </div>
@@ -100,4 +99,4 @@ const Friends = () => {
   );
 };
 
-export default Friends;
+export default Followers;

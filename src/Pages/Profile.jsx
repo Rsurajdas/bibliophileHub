@@ -20,7 +20,7 @@ const Profile = () => {
   const fetchUser = async (id) => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/users/get-user/${id}`,
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/get-user/${id}`,
         {
           method: 'GET',
           headers: {
@@ -39,7 +39,7 @@ const Profile = () => {
   const fetchPosts = async (id) => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/posts/get-posts/${id}`,
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/posts/get-posts/${id}`,
         {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${token}` },
@@ -55,7 +55,7 @@ const Profile = () => {
 
   const fetchReading = async (id) => {
     const res = await fetch(
-      `http://127.0.0.1:3000/api/v1/shelf/get-currently-reading/books/${id}`,
+      `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/get-currently-reading/books/${id}`,
       {
         method: 'GET',
         headers: {
@@ -92,7 +92,7 @@ const Profile = () => {
                     <Avatar
                       sizes="large"
                       alt={user.name}
-                      src={`http://127.0.0.1:3000${user.photo}`}
+                      src={user.photo}
                       sx={{ width: '150px', height: '150px', margin: '0 auto' }}
                     />
                   </Col>
@@ -133,34 +133,19 @@ const Profile = () => {
                         }
                       />
                       {!isLoading &&
-                        posts &&
+                        posts.length > 0 &&
                         posts.map((post) => (
                           <Post key={post._id} post={post} />
                         ))}
+                      {!isLoading && posts.length === 0 && (
+                        <p>No post found!</p>
+                      )}
                     </div>
                   </Col>
                 </Row>
               </div>
             </Col>
             <Col md={4}>
-              <div className="search-user">
-                <div className="search-wrapper">
-                  <form className="search-form">
-                    <div className="form-group" style={{ marginBottom: '0' }}>
-                      <input
-                        type="search"
-                        name="search"
-                        id="search"
-                        placeholder="name or email"
-                        style={{ fontSize: '12px' }}
-                      />
-                      <button type="submit">
-                        <i className="fa-solid fa-magnifying-glass"></i>
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
               <div className="user-following mt-4">
                 <Title
                   element={
@@ -172,19 +157,24 @@ const Profile = () => {
                     </h6>
                   }
                 />
-                <AvatarGroup
-                  max={4}
-                  total={user.following?.length}
-                  sx={{ justifyContent: 'flex-end' }}
-                >
-                  {user.following?.map((following) => (
-                    <Avatar
-                      key={following._id}
-                      alt={following.name}
-                      src={`http://127.0.0.1:3000${following.photo}`}
-                    />
-                  ))}
-                </AvatarGroup>
+                {!isLoading && user.following?.length > 0 && (
+                  <AvatarGroup
+                    max={4}
+                    total={user.following?.length}
+                    sx={{ justifyContent: 'flex-end' }}
+                  >
+                    {user.following?.map((following) => (
+                      <Avatar
+                        key={following._id}
+                        alt={following.name}
+                        src={following.photo}
+                      />
+                    ))}
+                  </AvatarGroup>
+                )}
+                {!isLoading && user.following?.length === 0 && (
+                  <p>you following no one</p>
+                )}
               </div>
               {user.request_pending?.length > 0 && currentUser === profileId ? (
                 <div className="user-following mt-4">
@@ -215,7 +205,7 @@ const Profile = () => {
                       <Avatar
                         key={profile._id}
                         alt={profile.name}
-                        src={`http://127.0.0.1:3000${profile.photo}`}
+                        src={profile.photo}
                       />
                     ))}
                   </AvatarGroup>
@@ -234,6 +224,7 @@ const Profile = () => {
                 />
                 <div className="mt-3">
                   {!isLoading &&
+                    reading.length > 0 &&
                     reading.map((data) => (
                       <CurrentlyReading
                         key={data.book._id}
@@ -241,6 +232,9 @@ const Profile = () => {
                         currentUser={currentUser === profileId ? true : false}
                       />
                     ))}
+                  {!isLoading && reading.length === 0 && (
+                    <p>Add books to Currently reading shelf</p>
+                  )}
                 </div>
               </div>
             </Col>

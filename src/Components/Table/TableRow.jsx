@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useRouteLoaderData } from 'react-router-dom';
 import { Rating } from '@mui/material';
+import Modal from '@mui/joy/Modal';
+import ModalClose from '@mui/joy/ModalClose';
+import { ModalDialog } from '@mui/joy';
 import axios from 'axios';
 import Button from '../Btn/Button';
 import SelectSelf from '../Shelf/SelectShelf';
@@ -17,35 +20,45 @@ const TableRow = ({
   handleUpdateShelf,
 }) => {
   const [open, setOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [saveRating, setSavRating] = useState(0);
   const token = useRouteLoaderData('token');
+  const reviewRef = useRef(null);
+  const [review, setReview] = useState('');
 
   const handleRating = async (e, newValue) => {
     try {
+      e.preventDefault();
       if (!saveRating) {
         const ratingData = {
           rating: newValue,
+          review: reviewRef.current.value,
         };
         const res = await axios.post(
-          `http://127.0.0.1:3000/api/v1/books/${book.book._id}/reviews`,
+          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/${book.book._id}/reviews`,
           ratingData,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
         const { data } = res;
         setSavRating(data.data.review.rating);
+        setReview(data.data.review.review);
         toast.success(`${newValue} star rating is saved`);
+        setModalOpen(false);
       } else {
         const ratingData = {
           rating: newValue,
+          review: reviewRef.current.value,
         };
         const res = await axios.patch(
-          `http://127.0.0.1:3000/api/v1/books/${book.book._id}/reviews`,
+          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/${book.book._id}/reviews`,
           ratingData,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
         const { data } = res;
         setSavRating(data.data.review.rating);
+        setReview(data.data.review.review);
         toast.success(`Rating updated to ${newValue} star rating`);
+        setModalOpen(false);
       }
     } catch (err) {
       toast.error(err.message);
@@ -123,7 +136,15 @@ const TableRow = ({
           </div>
         </td>
         <td>
-          <Link to="/">Write Review</Link>
+          {!review ? (
+            <Button
+              text="Write Review"
+              variant="text"
+              onClick={() => setModalOpen(true)}
+            />
+          ) : (
+            <p>{review}</p>
+          )}
         </td>
         <td>
           {!shelfId ? (
@@ -162,6 +183,66 @@ const TableRow = ({
           />
         )}
       </tr>
+      <Modal
+        aria-labelledby="modal-title"
+        aria-describedby="modal-desc"
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <ModalDialog
+          aria-labelledby="size-modal-title"
+          aria-describedby="size-modal-description"
+          size="lg"
+        >
+          <ModalClose variant="outlined" />
+          <div className="modal_top">
+            <h3 style={{ fontSize: '18px' }} className="mb-2">
+              Write a review
+            </h3>
+            <div className="text-center my-3">
+              <Rating
+                name="book-rating"
+                value={saveRating}
+                size="large"
+                onChange={handleRating}
+              />
+            </div>
+          </div>
+          <div className="modal_bottom">
+            <form action="post" onSubmit={handleRating}>
+              <div className="form-group">
+                <textarea
+                  name="review"
+                  id="review"
+                  cols="50"
+                  rows="30"
+                  className="form-input"
+                  style={{ height: '90px' }}
+                  placeholder="write a review"
+                  ref={reviewRef}
+                ></textarea>
+              </div>
+              <div className="modal-footer">
+                <Button
+                  text="cancel"
+                  variant="solid"
+                  sx={{
+                    backgroundColor: '#b8b8b8',
+                    marginRight: '10px',
+                  }}
+                  type="button"
+                />
+                <Button text="submit" variant="solid" type="submit" />
+              </div>
+            </form>
+          </div>
+        </ModalDialog>
+      </Modal>
     </>
   );
 };

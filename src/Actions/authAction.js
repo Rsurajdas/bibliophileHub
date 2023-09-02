@@ -9,13 +9,16 @@ export const authAction = async ({ request }) => {
     password: formData.get('password'),
   };
 
-  const res = await fetch('http://127.0.0.1:3000/api/v1/users/login', {
-    method: 'POST',
-    body: JSON.stringify(credentials),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  const res = await fetch(
+    'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/login',
+    {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
 
   if (res.status === 401) {
     return res;
@@ -37,5 +40,5 @@ export const authAction = async ({ request }) => {
     });
   }
 
-  return redirect('/');
+  return redirect(`/profile/${userId}`);
 };

@@ -14,7 +14,7 @@ const RequestPending = () => {
 
   const fetchPendingRequest = async (id) => {
     const res = await fetch(
-      `http://127.0.0.1:3000/api/v1/users/request_pending/${id}`,
+      `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/request_pending/${id}`,
       {
         method: 'GET',
         headers: {
@@ -30,7 +30,7 @@ const RequestPending = () => {
   const handleAcceptRequest = async (id) => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/users/accept-request/${id}`,
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/accept-request/${id}`,
         {
           method: 'POST',
           headers: {
@@ -48,7 +48,7 @@ const RequestPending = () => {
   const handleCancelRequest = async (id) => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/users/cancel-request/${id}`,
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/cancel-request/${id}`,
         {
           method: 'POST',
           headers: {
@@ -69,7 +69,6 @@ const RequestPending = () => {
 
   return (
     <main>
-      {console.log(requestPending.length < 0)}
       <section className="py-5">
         <Container>
           <Row>
@@ -98,10 +97,7 @@ const RequestPending = () => {
                             <div className="friend-item">
                               <div className="friend-left">
                                 <div className="friend-img">
-                                  <img
-                                    src={`http://127.0.0.1:3000${profile.photo}`}
-                                    alt={profile.name}
-                                  />
+                                  <img src={profile.photo} alt={profile.name} />
                                 </div>
                                 <div className="friend-detail ps-2">
                                   <h6
@@ -171,7 +167,7 @@ const RequestPending = () => {
                       </Link>
                     </div>
                     <div className="">
-                      <Link to="/add-friends" style={{ color: '#2a2a2a' }}>
+                      <Link to="/add-friend" style={{ color: '#2a2a2a' }}>
                         Add friends
                       </Link>
                     </div>

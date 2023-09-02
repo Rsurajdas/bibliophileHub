@@ -13,7 +13,7 @@ const Following = () => {
   const fetchFollowing = async (id) => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/users/following/${id}`,
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/following/${id}`,
         {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${token}` },
@@ -68,17 +68,23 @@ const Following = () => {
                 <Col md={4}>
                   <div className="friends-link">
                     <div className="">
-                      <Link to="/following" style={{ color: '#2a2a2a' }}>
+                      <Link
+                        to={`/following/${profileId}`}
+                        style={{ color: '#2a2a2a' }}
+                      >
                         People I{`'`}m following
                       </Link>
                     </div>
                     <div className="">
-                      <Link to="/following" style={{ color: '#2a2a2a' }}>
+                      <Link
+                        to={`/followers/${profileId}`}
+                        style={{ color: '#2a2a2a' }}
+                      >
                         My followers
                       </Link>
                     </div>
                     <div className="">
-                      <Link to="/add-friends" style={{ color: '#2a2a2a' }}>
+                      <Link to="/add-friend" style={{ color: '#2a2a2a' }}>
                         Add friends
                       </Link>
                     </div>

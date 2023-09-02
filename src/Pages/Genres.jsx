@@ -15,7 +15,7 @@ const Genres = () => {
       try {
         setIsLoading(true);
         const res = await axios.get(
-          'http://127.0.0.1:3000/api/v1/books/genres/grouped-by-genres',
+          'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/genres/grouped-by-genres',
           {
             signal: controller.signal,
           }
@@ -38,7 +38,6 @@ const Genres = () => {
       <Container>
         <Row>
           <Col md={8}>
-            {isLoading && <p>Loading...</p>}
             {!isLoading &&
               data.map((genre) => (
                 <section className="py-2 mb-2" key={genre._id}>

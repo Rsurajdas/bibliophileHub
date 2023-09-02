@@ -13,7 +13,7 @@ const Friends = () => {
   const fetchFriends = async (id) => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/users/friends/${id}`,
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/friends/${id}`,
         {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${token}` },
@@ -84,7 +84,7 @@ const Friends = () => {
                       </Link>
                     </div>
                     <div className="">
-                      <Link to="/add-friends" style={{ color: '#2a2a2a' }}>
+                      <Link to="/add-friend" style={{ color: '#2a2a2a' }}>
                         Add friends
                       </Link>
                     </div>

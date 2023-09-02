@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect, useRef } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { getUserData } from '../../store/actions/userAction';
+import { useSelector, shallowEqual } from 'react-redux';
 import { Avatar, Rating } from '@mui/material';
 import { getUserId } from '../../utils/auth';
 import { Link, useRouteLoaderData } from 'react-router-dom';
@@ -17,11 +16,10 @@ const Post = ({ post }) => {
   const [postComments, setPostComments] = useState(post.comments);
   const userId = getUserId();
   const commentRef = useRef(null);
-  const dispatch = useDispatch();
 
   const handleLike = async (postId, user_id) => {
     const res = await fetch(
-      `http://127.0.0.1:3000/api/v1/posts/${postId}/like`,
+      `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/posts/${postId}/like`,
       {
         method: 'POST',
         headers: {
@@ -36,7 +34,7 @@ const Post = ({ post }) => {
 
   const handleRemoveLike = async (postId, user_id) => {
     const res = await fetch(
-      `http://127.0.0.1:3000/api/v1/posts/${postId}/unlike`,
+      `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/posts/${postId}/unlike`,
       {
         method: 'POST',
         headers: {
@@ -57,20 +55,15 @@ const Post = ({ post }) => {
         text: commentRef.current.value,
       };
       const res = await axios.post(
-        `http://127.0.0.1:3000/api/v1/posts/${postId}/add-comment`,
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/posts/${postId}/add-comment`,
         comment,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
       const { data } = res;
-      console.log(data.post.comments);
       setPostComments(data.post.comments);
       commentRef.current.value = '';
     };
   };
-
-  useEffect(() => {
-    dispatch(getUserData());
-  }, [dispatch]);
 
   const { user } = useSelector((state) => state.user, shallowEqual);
 
@@ -83,10 +76,7 @@ const Post = ({ post }) => {
       <div className="post">
         <div className="post-avatar">
           <Link to={`/profile/${post.user._id}`}>
-            <Avatar
-              alt={post.user.name}
-              src={`http://127.0.0.1:3000${post.user.photo}`}
-            />
+            <Avatar alt={post.user.name} src={post.user.photo} />
           </Link>
         </div>
         <div className="post-header">
@@ -148,7 +138,7 @@ const Post = ({ post }) => {
                   <div className="comment-body">
                     <Avatar
                       alt={comment.user.name}
-                      src={`http://127.0.0.1:3000${comment.user.photo}`}
+                      src={`${comment.user.photo}`}
                     />
                     <div className="comment-user">
                       <h6 className="user-name mb-1">
@@ -164,10 +154,7 @@ const Post = ({ post }) => {
             </ul>
           )}
           <div className="post-comment">
-            <Avatar
-              alt={user.name}
-              src={`http://127.0.0.1:3000${user.photo}`}
-            />
+            <Avatar alt={user.name} src={user.photo} />
             <form method="post" onSubmit={handleComment(post._id, userId)}>
               <div className="form-group d-flex" style={{ gap: '2%' }}>
                 <textarea

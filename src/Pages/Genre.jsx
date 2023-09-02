@@ -15,9 +15,7 @@ const Genre = () => {
   useEffect(() => {
     const fetchData = async (path) => {
       try {
-        const res = await axios.get(
-          `http://127.0.0.1:3000/api/v1/books/get-books/${path}`
-        );
+        const res = await axios.get(`https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/get-books/${path}`);
         const { data } = res;
         setData(data.data.books);
         setIsLoading(false);
@@ -32,7 +30,7 @@ const Genre = () => {
   useEffect(() => {
     const fetchGenres = async () => {
       try {
-        const res = await axios.get('http://127.0.0.1:3000/api/v1/genres');
+        const res = await axios.get('https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/genres');
         const { data } = res;
         setGenres(data.data.genres);
         setIsLoading(false);

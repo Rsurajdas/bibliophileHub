@@ -25,9 +25,11 @@ const AddShelf = ({ setShelves }) => {
         shelf_name: shelfRef.current.value,
       };
       const res = await axios.post(
-        'http://127.0.0.1:3000/api/v1/shelf',
+        'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf',
         shelfData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       const { data } = res;
       setShelves((s) => [...s, data.data.shelf]);

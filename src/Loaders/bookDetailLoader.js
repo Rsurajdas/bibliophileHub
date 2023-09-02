@@ -1,34 +1,44 @@
-import { getAuthToken } from './../utils/auth';
+import { getAuthToken, getUserId } from './../utils/auth';
 
 export const bookDetailLoader = async ({ params }) => {
   const id = params.id;
   const token = getAuthToken();
+  const userId = getUserId();
 
   // fetch Book
-  const bookJson = await fetch(`http://127.0.0.1:3000/api/v1/books/${id}`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-  });
+  const bookJson = await fetch(
+    `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/${id}`,
+    {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    }
+  );
   const bookData = await bookJson.json();
 
   // fetch User
-  const userJson = await fetch('http://127.0.0.1:3000/api/v1/users/get-user', {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-  });
+  const userJson = await fetch(
+    `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/get-user/${userId}`,
+    {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    }
+  );
   const userData = await userJson.json();
 
   // Fetch Shelves
-  const shelvesJson = await fetch('http://127.0.0.1:3000/api/v1/shelf', {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-  });
+  const shelvesJson = await fetch(
+    'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf',
+    {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    }
+  );
   const shelvesData = await shelvesJson.json();
 
   return {

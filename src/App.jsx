@@ -8,7 +8,8 @@ import { bookDetailLoader } from './Loaders/bookDetailLoader';
 import { checkAuthLoader, tokenLoader } from './utils/auth';
 import { signOut } from './Pages/SignOut';
 import AuthRootLayout from './AuthLayout';
-import { homeLoader } from './Loaders/homeLoader';
+import ErrorPage from './ErrorPage';
+import LoadingScreen from './LoadingScreen';
 const Genres = lazy(() => import('./Pages/Genres'));
 const Home = lazy(() => import('./Pages/Home'));
 const Genre = lazy(() => import('./Pages/Genre'));
@@ -19,8 +20,9 @@ const BookDetail = lazy(() => import('./Pages/BookDetail'));
 const Profile = lazy(() => import('./Pages/Profile'));
 const Friends = lazy(() => import('./Pages/Friends'));
 const Following = lazy(() => import('./Pages/Following'));
-const Follower = lazy(() => import('./Pages/Follower'));
+const Followers = lazy(() => import('./Pages/Follower'));
 const RequestPending = lazy(() => import('./Pages/RequestPending'));
+const AddFriend = lazy(() => import('./Pages/AddFriend'));
 
 const router = createBrowserRouter([
   {
@@ -28,63 +30,78 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     id: 'token',
     loader: tokenLoader,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: '/',
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingScreen />}>
             <Home />
           </Suspense>
         ),
-        loader: homeLoader,
+        loader: checkAuthLoader,
       },
       {
         path: '/profile/:profileId',
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingScreen />}>
             <Profile />
           </Suspense>
         ),
+        loader: checkAuthLoader,
       },
       {
         path: '/friends/:profileId',
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingScreen />}>
             <Friends />
           </Suspense>
         ),
+        loader: checkAuthLoader,
       },
       {
         path: '/following/:profileId',
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingScreen />}>
             <Following />
           </Suspense>
         ),
+        loader: checkAuthLoader,
       },
       {
         path: '/followers/:profileId',
         element: (
-          <Suspense>
-            <Follower />
+          <Suspense fallback={<LoadingScreen />}>
+            <Followers />
           </Suspense>
         ),
+        loader: checkAuthLoader,
       },
       {
         path: '/request-pending/:profileId',
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingScreen />}>
             <RequestPending />
+          </Suspense>
+        ),
+        loader: checkAuthLoader,
+      },
+      {
+        path: '/add-friend',
+        element: (
+          <Suspense fallback={<LoadingScreen />}>
+            <AddFriend />
           </Suspense>
         ),
       },
       {
         path: '/mybooks',
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingScreen />}>
             <MyBooks />
           </Suspense>
         ),
+        loader: checkAuthLoader,
       },
       {
         path: '/genres',
@@ -92,28 +109,31 @@ const router = createBrowserRouter([
           {
             index: true,
             element: (
-              <Suspense>
+              <Suspense fallback={<LoadingScreen />}>
                 <Genres />
               </Suspense>
             ),
+            loader: checkAuthLoader,
           },
           {
             path: ':pathName/:genreName',
             element: (
-              <Suspense>
+              <Suspense fallback={<LoadingScreen />}>
                 <Genre />
               </Suspense>
             ),
+            loader: checkAuthLoader,
           },
         ],
       },
       {
         path: '/book',
+        loader: checkAuthLoader,
         children: [
           {
             path: ':id',
             element: (
-              <Suspense>
+              <Suspense fallback={<LoadingScreen />}>
                 <BookDetail />
               </Suspense>
             ),
@@ -130,7 +150,7 @@ const router = createBrowserRouter([
       {
         path: '/signin',
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingScreen />}>
             <SignIn />
           </Suspense>
         ),
@@ -139,7 +159,7 @@ const router = createBrowserRouter([
       {
         path: '/signup',
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingScreen />}>
             <SignUp />
           </Suspense>
         ),

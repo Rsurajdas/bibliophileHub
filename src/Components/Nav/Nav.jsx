@@ -21,7 +21,7 @@ function Navigation({ user }) {
             />
           </div>
           <NavItems>
-            <NavList path="/" text="Home" />
+            <NavList path="/" text="Feeds" />
             <NavList path="/mybooks" text="My Books" />
             <NavList path="/genres" text="Genres" />
           </NavItems>
@@ -32,10 +32,7 @@ function Navigation({ user }) {
                 <img src="/images/icn_nav_friend.svg" alt="profile image" />
               </div>
               <div className="nav-icon">
-                <Avatar
-                  alt={user.name}
-                  src={`http://127.0.0.1:3000${user.photo}`}
-                />
+                <Avatar alt={user.name} src={user.photo} />
                 <div className="dropdown-wrapper">
                   <ul>
                     <fieldset>

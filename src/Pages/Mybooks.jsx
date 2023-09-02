@@ -8,8 +8,8 @@ import { Link, useRouteLoaderData } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import Table from '../Components/Table/Table';
 import Grid from '../Components/Layout/Grid';
-import './../Components/Btn/Button.css';
 import AddShelf from '../Components/Shelf/AddShelf';
+import './../Components/Btn/Button.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 const MyBooks = () => {
@@ -22,22 +22,19 @@ const MyBooks = () => {
   const token = useRouteLoaderData('token');
 
   const fetchBooks = async () => {
-    const res = await fetch(
-      'http://127.0.0.1:3000/api/v1/shelf/all-books-user-shelves',
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      }
-    );
+    const res = await fetch('https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/all-books-user-shelves', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
     const data = await res.json();
     setIsLoading(false);
     setBooks(data.data.books);
   };
 
   const fetchShelves = async () => {
-    const res = await fetch('http://127.0.0.1:3000/api/v1/shelf', {
+    const res = await fetch('https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -49,7 +46,7 @@ const MyBooks = () => {
   };
 
   const fetchBooksByShelf = async (id) => {
-    const res = await fetch(`http://127.0.0.1:3000/api/v1/shelf/${id}`, {
+    const res = await fetch(`https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/${id}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -69,7 +66,7 @@ const MyBooks = () => {
     if (confirm) {
       try {
         const res = await fetch(
-          `http://127.0.0.1:3000/api/v1/shelf/remove-book/${shelfId}/${bookId}`,
+          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/remove-book/${shelfId}/${bookId}`,
           {
             method: 'POST',
             headers: {
@@ -195,9 +192,6 @@ const MyBooks = () => {
                               />
                             </Link>
                           </div>
-                          <Link to="/edit" className="float-link">
-                            edit
-                          </Link>
                         </div>
                       ))}
                     {books.length === 0 && (

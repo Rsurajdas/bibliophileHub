@@ -11,15 +11,12 @@ const ProfileList = ({ profile, btnName }) => {
 
   const handleRemove = async (action, user_id) => {
     try {
-      const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/users/${action}/${user_id}`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/${action}/${user_id}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       await res.json();
       setIsActive(false);
       window.location.reload(true);
@@ -33,10 +30,7 @@ const ProfileList = ({ profile, btnName }) => {
       <div className="friend-item">
         <div className="friend-left">
           <div className="friend-img">
-            <img
-              src={`http://127.0.0.1:3000${profile.photo}`}
-              alt={profile.name}
-            />
+            <img src={`${profile.photo}`} alt={profile.name} />
           </div>
           <div className="friend-detail ps-2">
             <h6
