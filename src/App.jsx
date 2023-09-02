@@ -19,6 +19,8 @@ const BookDetail = lazy(() => import('./Pages/BookDetail'));
 const Profile = lazy(() => import('./Pages/Profile'));
 const Friends = lazy(() => import('./Pages/Friends'));
 const Following = lazy(() => import('./Pages/Following'));
+const Follower = lazy(() => import('./Pages/Follower'));
+const RequestPending = lazy(() => import('./Pages/RequestPending'));
 
 const router = createBrowserRouter([
   {
@@ -57,6 +59,22 @@ const router = createBrowserRouter([
         element: (
           <Suspense>
             <Following />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/followers/:profileId',
+        element: (
+          <Suspense>
+            <Follower />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/request-pending/:profileId',
+        element: (
+          <Suspense>
+            <RequestPending />
           </Suspense>
         ),
       },

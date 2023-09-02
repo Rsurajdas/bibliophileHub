@@ -46,7 +46,11 @@ const Home = () => {
               <div className="mt-3">
                 {!isLoading &&
                   reading.map((data) => (
-                    <CurrentlyReading key={data.book._id} book={data} />
+                    <CurrentlyReading
+                      key={data.book._id}
+                      book={data}
+                      currentUser={true}
+                    />
                   ))}
               </div>
             </div>

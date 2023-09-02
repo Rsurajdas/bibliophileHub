@@ -2,7 +2,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import Title from '../Components/UI/Title';
 import { Link, useRouteLoaderData, useParams } from 'react-router-dom';
-import Button from '../Components/Btn/Button';
+import ProfileList from '../Components/Profile/ProfileList';
 
 const Following = () => {
   const [following, setFollowing] = useState([]);
@@ -10,10 +10,10 @@ const Following = () => {
   const token = useRouteLoaderData('token');
   const { profileId } = useParams();
 
-  const fetchFollowing = async () => {
+  const fetchFollowing = async (id) => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/users/following/${profileId}`,
+        `http://127.0.0.1:3000/api/v1/users/following/${id}`,
         {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${token}` },
@@ -28,8 +28,8 @@ const Following = () => {
   };
 
   useEffect(() => {
-    fetchFollowing();
-  }, []);
+    fetchFollowing(profileId);
+  }, [profileId]);
 
   return (
     <main>
@@ -56,36 +56,11 @@ const Following = () => {
                     <ul>
                       {!isLoading &&
                         following.map((friend) => (
-                          <li key={friend._id}>
-                            <div className="friend-item">
-                              <div className="friend-left">
-                                <div className="friend-img">
-                                  <img
-                                    src={`http://127.0.0.1:3000${friend.photo}`}
-                                    alt={friend.name}
-                                  />
-                                </div>
-                                <div className="friend-detail ps-2">
-                                  <h6
-                                    className=""
-                                    style={{
-                                      fontWeight: 700,
-                                      fontSize: '14px',
-                                      margin: '0',
-                                    }}
-                                  >
-                                    <Link to={`/profile/${friend._id}`}>
-                                      {friend.name}
-                                    </Link>
-                                  </h6>
-                                  <div className="">{friend.email}</div>
-                                </div>
-                              </div>
-                              <div className="friend-right">
-                                <Button text="unfollow" variant="solid" />
-                              </div>
-                            </div>
-                          </li>
+                          <ProfileList
+                            profile={friend}
+                            key={friend._id}
+                            btnName="unfollow"
+                          />
                         ))}
                     </ul>
                   </div>

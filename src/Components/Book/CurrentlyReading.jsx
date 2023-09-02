@@ -10,7 +10,7 @@ import './Book.css';
 import Button from '../Btn/Button';
 import 'react-toastify/dist/ReactToastify.css';
 
-const CurrentlyReading = ({ book }) => {
+const CurrentlyReading = ({ book, currentUser }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [readingProgress, setReadingProgress] = useState(book.readingProgress);
   const progressRef = useRef(null);
@@ -91,12 +91,14 @@ const CurrentlyReading = ({ book }) => {
             </Box>
           </Box>
         )}
-        <Button
-          text="update progress"
-          variant="outline"
-          sx={{ fontSize: '12px', padding: '5px 15px', marginTop: '10px' }}
-          onClick={handleClick}
-        />
+        {currentUser && (
+          <Button
+            text="update progress"
+            variant="outline"
+            sx={{ fontSize: '12px', padding: '5px 15px', marginTop: '10px' }}
+            onClick={handleClick}
+          />
+        )}
       </div>
       <Popover
         id={id}
@@ -130,6 +132,7 @@ const CurrentlyReading = ({ book }) => {
                   />
                   <span>of 100%</span>
                 </label>
+
                 <Button
                   text="Update"
                   variant="solid"
@@ -159,6 +162,7 @@ const CurrentlyReading = ({ book }) => {
 CurrentlyReading.propTypes = {
   book: PropTypes.object,
   setOpen: PropTypes.func,
+  currentUser: PropTypes.bool,
 };
 
 export default CurrentlyReading;

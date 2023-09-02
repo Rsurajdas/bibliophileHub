@@ -228,6 +228,10 @@
 .friend-img {
   width: 70px;
 }
+.friend-img img {
+  object-fit: cover;
+}
+
 .friend-left,
 .friend-item {
   display: flex;

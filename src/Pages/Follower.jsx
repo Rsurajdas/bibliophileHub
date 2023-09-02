@@ -13,7 +13,7 @@ const Friends = () => {
   const fetchFriends = async (id) => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/users/friends/${id}`,
+        `http://127.0.0.1:3000/api/v1/users/followers/${id}`,
         {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${token}` },
@@ -21,7 +21,7 @@ const Friends = () => {
       );
       const data = await res.json();
       setIsLoading(false);
-      setFriends(data.data.friends);
+      setFriends(data.data.followers);
     } catch (err) {
       console.error(err);
     }
@@ -35,6 +35,7 @@ const Friends = () => {
     <main>
       <section className="py-5">
         <Container>
+          {console.log(friends)}
           <Row>
             <Col md={10} className="mx-auto">
               <Row className="gx-5">

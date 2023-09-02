@@ -44,7 +44,7 @@ function Navigation({ user }) {
                         <Link to={`/profile/${user._id}`}>Profile</Link>
                       </li>
                       <li>
-                        <Link to="/friends">Friends</Link>
+                        <Link to={`/friends/${user._id}`}>Friends</Link>
                       </li>
                       <li>
                         <Form method="post" action="/signout">

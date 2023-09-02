@@ -5,6 +5,7 @@ import { Link, useRouteLoaderData, useParams } from 'react-router-dom';
 import Post from '../Components/Post/Post';
 import Title from '../Components/UI/Title';
 import CurrentlyReading from '../Components/Book/CurrentlyReading';
+import { getUserId } from '../utils/auth';
 import './../Components/Nav/Search.css';
 
 const Profile = () => {
@@ -14,11 +15,12 @@ const Profile = () => {
   const token = useRouteLoaderData('token');
   const [user, setUser] = useState({});
   let { profileId } = useParams();
+  const currentUser = getUserId();
 
-  const fetchUser = async () => {
+  const fetchUser = async (id) => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/users/get-user/${profileId}`,
+        `http://127.0.0.1:3000/api/v1/users/get-user/${id}`,
         {
           method: 'GET',
           headers: {
@@ -34,10 +36,10 @@ const Profile = () => {
     }
   };
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (id) => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:3000/api/v1/posts/get-posts/${profileId}`,
+        `http://127.0.0.1:3000/api/v1/posts/get-posts/${id}`,
         {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${token}` },
@@ -51,9 +53,9 @@ const Profile = () => {
     }
   };
 
-  const fetchReading = async () => {
+  const fetchReading = async (id) => {
     const res = await fetch(
-      `http://127.0.0.1:3000/api/v1/shelf/get-currently-reading/books/${profileId}`,
+      `http://127.0.0.1:3000/api/v1/shelf/get-currently-reading/books/${id}`,
       {
         method: 'GET',
         headers: {
@@ -67,16 +69,16 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    fetchReading();
-  }, []);
+    fetchReading(profileId);
+  }, [profileId]);
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    fetchPosts(profileId);
+  }, [profileId]);
 
   useEffect(() => {
-    fetchUser();
-  }, []);
+    fetchUser(profileId);
+  }, [profileId]);
 
   return (
     <main>
@@ -110,7 +112,7 @@ const Profile = () => {
                         </div>
                         <div className="">
                           <span style={{ fontWeight: 700 }}>Followers:</span>{' '}
-                          <Link to={`/followers`}>
+                          <Link to={`/followers/${profileId}`}>
                             {user.followers?.length} followers
                           </Link>
                         </div>
@@ -184,6 +186,41 @@ const Profile = () => {
                   ))}
                 </AvatarGroup>
               </div>
+              {user.request_pending?.length > 0 && currentUser === profileId ? (
+                <div className="user-following mt-4">
+                  <Title
+                    element={
+                      <div className="d-flex align-items-center border-bottom pb-2 mb-2 justify-content-between">
+                        <h6
+                          style={{
+                            fontWeight: 700,
+                            fontSize: '14px',
+                            margin: 0,
+                          }}
+                        >
+                          Pending request
+                        </h6>
+                        <Link to={`/request-pending/${profileId}`}>
+                          more...
+                        </Link>
+                      </div>
+                    }
+                  />
+                  <AvatarGroup
+                    max={4}
+                    total={user.request_pending?.length}
+                    sx={{ justifyContent: 'flex-end' }}
+                  >
+                    {user.request_pending?.map((profile) => (
+                      <Avatar
+                        key={profile._id}
+                        alt={profile.name}
+                        src={`http://127.0.0.1:3000${profile.photo}`}
+                      />
+                    ))}
+                  </AvatarGroup>
+                </div>
+              ) : null}
               <div className="currently-reading mt-4">
                 <Title
                   element={
@@ -198,7 +235,11 @@ const Profile = () => {
                 <div className="mt-3">
                   {!isLoading &&
                     reading.map((data) => (
-                      <CurrentlyReading key={data.book._id} book={data} />
+                      <CurrentlyReading
+                        key={data.book._id}
+                        book={data}
+                        currentUser={currentUser === profileId ? true : false}
+                      />
                     ))}
                 </div>
               </div>
