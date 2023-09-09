@@ -77,3 +77,12 @@
 .search-result li a:hover {
   background-color: hsl(120, 60%, 94%);
 }
+.search-result li.not-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f7f7f7;
+  color: hsl(0, 0%, 60%);
+  padding: 5px;
+  height: 65px;
+}

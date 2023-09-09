@@ -1,4 +1,4 @@
-import { getAuthToken, getUserId } from './../utils/auth';
+import { getAuthToken, getUserId } from '../utils/auth';
 
 export const bookDetailLoader = async ({ params }) => {
   const id = params.id;

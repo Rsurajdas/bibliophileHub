@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Search.css';
 
 const SearchField = ({ sx }) => {
@@ -35,7 +36,7 @@ const SearchField = ({ sx }) => {
           searchRef.current?.value &&
           results.map((data) => (
             <li key={data._id}>
-              <a href={`/book/${data._id}`}>
+              <Link to={`/book/${data._id}`}>
                 <div className="search-img">
                   <img src={data.book_image} alt="book cover" />
                 </div>
@@ -43,9 +44,12 @@ const SearchField = ({ sx }) => {
                   <h5>{data.title}</h5>
                   <div className="">By {data.author.name}</div>
                 </div>
-              </a>
+              </Link>
             </li>
           ))}
+        {searchRef.current?.value && results.length === 0 && (
+          <li className="not-found">No book found!</li>
+        )}
       </ul>
     </div>
   );

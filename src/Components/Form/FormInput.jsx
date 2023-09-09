@@ -26,7 +26,7 @@ const FormInput = ({
         placeholder={placeHolder}
       />
       {message && (
-        <small style={{ color: '#707070', fontSize: '12px' }}>
+        <small style={{ color: '#f00', fontSize: '12px' }}>
           <InfoOutlinedIcon fontSize="small" /> {message}
         </small>
       )}

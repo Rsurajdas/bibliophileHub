@@ -91,7 +91,7 @@ const SignIn = () => {
                     name="password"
                     id="password"
                     rounded={true}
-                    message="Passwords must be at least 8 characters."
+                    message={data?.message}
                   />
                 </div>
                 <div className="form-group">

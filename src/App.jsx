@@ -2,7 +2,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import RootLayout from './RootLayout';
 import './App.css';
-import { authAction } from './Actions/authAction';
 import { signUpAction } from './Actions/signUpAction';
 import { bookDetailLoader } from './Loaders/bookDetailLoader';
 import { checkAuthLoader, tokenLoader } from './utils/auth';
@@ -154,7 +153,6 @@ const router = createBrowserRouter([
             <SignIn />
           </Suspense>
         ),
-        action: authAction,
       },
       {
         path: '/signup',
