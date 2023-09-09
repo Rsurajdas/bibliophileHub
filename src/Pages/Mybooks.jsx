@@ -22,36 +22,45 @@ const MyBooks = () => {
   const token = useRouteLoaderData('token');
 
   const fetchBooks = async () => {
-    const res = await fetch('https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/all-books-user-shelves', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
+    const res = await fetch(
+      'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/all-books-user-shelves',
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      }
+    );
     const data = await res.json();
     setIsLoading(false);
     setBooks(data.data.books);
   };
 
   const fetchShelves = async () => {
-    const res = await fetch('https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
+    const res = await fetch(
+      'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf',
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      }
+    );
     const data = await res.json();
     setIsLoading(false);
     setShelves(data.data.shelves);
   };
 
   const fetchBooksByShelf = async (id) => {
-    const res = await fetch(`https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/${id}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
+    const res = await fetch(
+      `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/${id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      }
+    );
     const data = await res.json();
     setIsLoading(false);
     setSelfId(data.data.shelf._id);

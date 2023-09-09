@@ -104,7 +104,7 @@ const SignIn = () => {
                 <Link to="/">Privacy Policy</Link>
               </small>
               <div className="mt-4 text-center">
-                Create an account <Link to="/signup">Sign in</Link>
+                Create an account <Link to="/signup">Sign up</Link>
               </div>
             </div>
           </Col>

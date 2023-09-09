@@ -67,7 +67,7 @@ const Genres = () => {
                       />
                       <div className="books mt-1">
                         {genre.books.map((book) => (
-                          <Book key={book.title} book={book} />
+                          <Book key={book._id} book={book} />
                         ))}
                       </div>
                       <div
