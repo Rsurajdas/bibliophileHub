@@ -14,7 +14,6 @@ const SignIn = () => {
 
   return (
     <section>
-      {console.log(data)}
       <Container>
         <Row className='justify-content-center'>
           <Col md={3}>
