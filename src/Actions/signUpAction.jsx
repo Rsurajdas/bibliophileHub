@@ -43,5 +43,5 @@ export const signUpAction = async ({ request }) => {
     });
   }
 
-  return redirect('/');
+  return redirect(`/profile/${data.data.user._id}`);
 };

@@ -8,6 +8,7 @@ import PostBtn from '../Components/Post/PostBtn';
 import parse from 'html-react-parser';
 import Title from './../Components/UI/Title';
 import Rating from '@mui/material/Rating';
+import { Avatar } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -128,8 +129,8 @@ const BookDetail = () => {
         <Container>
           <Row>
             <Col md={3}>
-              <div className="detail-aside text-center">
-                <div className="detail-img ">
+              <div className='detail-aside text-center'>
+                <div className='detail-img '>
                   <img src={book.book_image} alt={book.title} />
                 </div>
                 <PostBtn
@@ -139,54 +140,51 @@ const BookDetail = () => {
                   setOpen={setOpen}
                 />
                 <div
-                  className="btn-wrapper"
-                  style={{ width: '250px', margin: '1rem auto 0.2rem' }}
-                >
+                  className='btn-wrapper'
+                  style={{ width: '250px', margin: '1rem auto 0.2rem' }}>
                   <a
                     href={book.amazon_product_url}
                     style={{ width: '250px', borderRadius: '2.5rem' }}
-                    className="button button-outline text-center"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                    className='button button-outline text-center'
+                    target='_blank'
+                    rel='noopener noreferrer'>
                     Buy on Amazon IN
                   </a>
                 </div>
                 <Button
-                  text="More Option"
-                  variant="text"
-                  type="button"
+                  text='More Option'
+                  variant='text'
+                  type='button'
                   sx={{ marginBottom: '1rem' }}
                   onClick={() => setShow(true)}
                 />
-                <div className="book-rating">
+                <div className='book-rating'>
                   <Rating
-                    size="large"
+                    size='large'
                     onChange={handleRating}
                     value={saveRating}
                   />
                 </div>
-                <Button type="button" variant="text" text="Rate this book" />
+                <Button type='button' variant='text' text='Rate this book' />
               </div>
             </Col>
             <Col md={9}>
-              <div className="detail-content">
-                <h1 className="detail-title">
+              <div className='detail-content'>
+                <h1 className='detail-title'>
                   {Capitalize(book.title.toLowerCase())}
                 </h1>
-                <div className="detail-author">{book.author.name}</div>
+                <div className='detail-author'>{book.author.name}</div>
                 <Rating
-                  name="read-only"
+                  name='read-only'
                   value={4}
                   readOnly
-                  size="large"
+                  size='large'
                   sx={{ padding: '8px', margin: '-8px -8px 0 -8px' }}
                 />
-                <div className="detail-content">{parse(book.description)}</div>
+                <div className='detail-content'>{parse(book.description)}</div>
                 <ul
-                  className="detail-genres mb-4 border-bottom pb-4 mt-3"
-                  style={{ fontSize: '13px' }}
-                >
+                  className='detail-genres mb-4 border-bottom pb-4 mt-3'
+                  style={{ fontSize: '13px' }}>
                   {book.genres.map((genre) => (
                     <li key={genre._id}>
                       <Link to={`/genres/${genre._id}/${genre.genre_name}`}>
@@ -195,37 +193,41 @@ const BookDetail = () => {
                     </li>
                   ))}
                 </ul>
-                <div className="book-edition pb-4 border-bottom">
+                <div className='book-edition pb-4 border-bottom'>
                   <Title element={<h6>This edition</h6>} />
-                  <div className="edition-item">
+                  <div className='edition-item'>
                     <dt>Published</dt>
                     <dd>by {book.publisher}</dd>
                   </div>
-                  <div className="edition-item">
+                  <div className='edition-item'>
                     <dt>ISBN</dt>
                     <dd>
                       {book.primary_isbn13} (ISBN10: {book.primary_isbn10})
                     </dd>
                   </div>
                 </div>
-                <div className="author  mt-4 border-bottom pb-4">
-                  <Title element={<h5 className="mb-3">About the author</h5>} />
-                  <div className="d-flex align-items-center">
-                    <div className="author-left d-flex align-items-center">
-                      <div className="author-image">
-                        <img src={`${book.author.photo}`} alt="" />
+                <div className='author  mt-4 border-bottom pb-4'>
+                  <Title element={<h5 className='mb-3'>About the author</h5>} />
+                  <div className='d-flex align-items-center'>
+                    <div className='author-left d-flex align-items-center'>
+                      <div className='author-image'>
+                        <Avatar
+                          alt={book.author.name}
+                          src={book.author.photo}
+                          sx={{ width: '100%', height: '100%' }}
+                        />
                       </div>
-                      <div className="author-details">
+                      <div className='author-details'>
                         <h6>{book.author.name}</h6>
-                        <div className="">
+                        <div className=''>
                           {book.author.followers.length} followers
                         </div>
                       </div>
                     </div>
-                    <div className="author-right">
+                    <div className='author-right'>
                       <Button
-                        type="button"
-                        variant="solid"
+                        type='button'
+                        variant='solid'
                         text={isFollowing ? 'Following' : 'Follow'}
                         onClick={() => handleFollowToggle(book.author._id)}
                       />
@@ -243,14 +245,14 @@ const BookDetail = () => {
         handleShelf={handleAddToShelf}
         open={open}
       />
-      <ToastContainer position="bottom-left" />
+      <ToastContainer position='bottom-left' />
 
       <Dialog onClose={() => setShow(false)} open={show}>
         <DialogTitle>Buy Links</DialogTitle>
         <List>
           {book.buy_links.map((link) => (
             <ListItem key={link._id}>
-              <a href={link.url} target="_blank" rel="noopener noreferrer">
+              <a href={link.url} target='_blank' rel='noopener noreferrer'>
                 {link.name}
               </a>
             </ListItem>

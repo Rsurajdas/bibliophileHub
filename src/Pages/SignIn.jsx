@@ -28,9 +28,10 @@ const SignIn = () => {
       }
     );
     if (res.status === 401) {
-      return res;
+      setData(await res.json());
     }
     const data = await res.json();
+
     setData(data);
     const token = data.token;
     const userId = data.data.user._id;
@@ -49,15 +50,16 @@ const SignIn = () => {
   };
   return (
     <section>
+      {console.log(data)}
       <Container>
-        <Row className="justify-content-center">
+        <Row className='justify-content-center'>
           <Col md={3}>
-            <div className="auth-wrapper">
-              <div className="auth-top text-center mb-3">
-                <div className="logo mb-3">
+            <div className='auth-wrapper'>
+              <div className='auth-top text-center mb-3'>
+                <div className='logo mb-3'>
                   <img
-                    src="/images/bibliophileHub.png"
-                    alt="bibliophile hub logo"
+                    src='/images/bibliophileHub.png'
+                    alt='bibliophile hub logo'
                   />
                 </div>
                 {data?.status === 'fail' && (
@@ -65,46 +67,45 @@ const SignIn = () => {
                 )}
                 <h1>Sign in</h1>
               </div>
-              <form method="post" onSubmit={handleSubmit}>
-                <div className="form-group">
+              <form method='post' onSubmit={handleSubmit}>
+                <div className='form-group'>
                   <FormInput
-                    fieldName="Email"
-                    type="email"
-                    name="email"
-                    id="email"
+                    fieldName='Email'
+                    type='email'
+                    name='email'
+                    id='email'
                     rounded={true}
                   />
                 </div>
-                <div className="form-group">
+                <div className='form-group'>
                   <FormInput
-                    fieldName="Password"
-                    type="password"
-                    name="password"
-                    id="password"
+                    fieldName='Password'
+                    type='password'
+                    name='password'
+                    id='password'
                     rounded={true}
                   />
                 </div>
                 <div
-                  className="form-group"
-                  style={{ textAlign: 'right', margin: '0' }}
-                >
-                  <Link to="/forgot-password">Forgot your password?</Link>
+                  className='form-group'
+                  style={{ textAlign: 'right', margin: '0' }}>
+                  <Link to='/forgot-password'>Forgot your password?</Link>
                 </div>
                 <Button
-                  text="Submit"
-                  type="submit"
-                  variant="solid"
+                  text='Submit'
+                  type='submit'
+                  variant='solid'
                   rounded={true}
                   sx={{ width: '100%', marginTop: '10px' }}
                 />
               </form>
-              <small className="d-block mt-3">
+              <small className='d-block mt-3'>
                 By signing in, you agree to the Bibliophile Hub{' '}
-                <Link to="/">Terms of Service</Link> and{' '}
-                <Link to="/">Privacy Policy</Link>
+                <Link to='/'>Terms of Service</Link> and{' '}
+                <Link to='/'>Privacy Policy</Link>
               </small>
-              <div className="mt-4 text-center">
-                Create an account <Link to="/signup">Sign up</Link>
+              <div className='mt-4 text-center'>
+                Create an account <Link to='/signup'>Sign up</Link>
               </div>
             </div>
           </Col>
