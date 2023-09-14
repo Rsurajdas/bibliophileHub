@@ -1,7 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import RootLayout from './RootLayout';
-import './App.css';
 import { signUpAction } from './Actions/signUpAction';
 import { bookDetailLoader } from './Loaders/bookDetailLoader';
 import { checkAuthLoader, tokenLoader } from './utils/auth';
@@ -9,6 +10,7 @@ import { signOut } from './Pages/SignOut';
 import AuthRootLayout from './AuthLayout';
 import ErrorPage from './ErrorPage';
 import LoadingScreen from './LoadingScreen';
+import './App.css';
 const Genres = lazy(() => import('./Pages/Genres'));
 const Home = lazy(() => import('./Pages/Home'));
 const Genre = lazy(() => import('./Pages/Genre'));
@@ -171,8 +173,15 @@ const router = createBrowserRouter([
   },
 ]);
 
+const queryClient = new QueryClient();
+
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={false} position='bottom-right' />
+    </QueryClientProvider>
+  );
 }
 
 export default App;

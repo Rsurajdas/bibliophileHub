@@ -1,49 +1,43 @@
-import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
-import { ToastContainer, toast } from 'react-toastify';
+import { useQuery } from '@tanstack/react-query';
 import Book from '../Components/Book/Book';
 import axios from 'axios';
 import Title from '../Components/UI/Title';
+import LoadingScreen from '../LoadingScreen';
 
 const Genre = () => {
-  const [data, setData] = useState([]);
-  const [genres, setGenres] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const { pathName, genreName } = useParams();
 
-  useEffect(() => {
-    const fetchData = async (path) => {
-      try {
-        const res = await axios.get(`https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/get-books/${path}`);
-        const { data } = res;
-        setData(data.data.books);
-        setIsLoading(false);
-      } catch (err) {
-        toast.error(err.message);
-      }
-    };
+  const genres = useQuery({
+    queryKey: ['genres'],
+    queryFn: () => {
+      return axios.get(
+        'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/genres'
+      );
+    },
+    select: (data) => data.data.data.genres,
+  });
 
-    fetchData(pathName);
-  }, [pathName]);
+  const fetchBooks = (path) => {
+    return axios.get(
+      `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/get-books/${path}`
+    );
+  };
 
-  useEffect(() => {
-    const fetchGenres = async () => {
-      try {
-        const res = await axios.get('https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/genres');
-        const { data } = res;
-        setGenres(data.data.genres);
-        setIsLoading(false);
-      } catch (err) {
-        toast.error(err.message);
-      }
-    };
-    fetchGenres();
-  }, []);
+  const books = useQuery({
+    queryKey: ['books', pathName],
+    queryFn: () => fetchBooks(pathName),
+    select: (data) => data.data.data.books,
+  });
+
+  if (genres.isLoading || books.isLoading) return <LoadingScreen />;
+
+  if (books.isFetching) return <LoadingScreen />;
 
   return (
     <main>
-      <section className="py-2 mb-2">
+      <section className='py-2 mb-2'>
         <Container>
           <Row>
             <Col md={9}>
@@ -51,15 +45,17 @@ const Genre = () => {
                 element={
                   <h3
                     style={{ fontSize: '20px', color: '#282' }}
-                    className="border-bottom pb-2"
-                  >
+                    className='border-bottom pb-2'>
                     {genreName}
                   </h3>
                 }
               />
-              <div className="books mt-1">
-                {!isLoading &&
-                  data.map((book) => <Book key={book._id} book={book} />)}
+
+              <div className='books mt-1'>
+                {!books.data.length && <p>No Books Found</p>}
+                {books?.data?.map((book) => (
+                  <Book key={book._id} book={book} />
+                ))}
               </div>
             </Col>
             <Col md={3}>
@@ -68,8 +64,7 @@ const Genre = () => {
                   element={
                     <h6
                       style={{ fontSize: '14px', color: '#282' }}
-                      className="border-bottom pb-2"
-                    >
+                      className='border-bottom pb-2'>
                       All genres
                     </h6>
                   }
@@ -80,25 +75,21 @@ const Genre = () => {
                     listStyle: 'none',
                     margin: 0,
                     padding: 0,
-                  }}
-                >
-                  {genres &&
-                    genres.map((genre) => (
-                      <li key={genre._id} style={{ marginBottom: '5px' }}>
-                        <Link
-                          to={`/genres/${genre._id}/${genre.genre_name}`}
-                          style={{ color: '#2a2a2a', fontWeight: '600' }}
-                        >
-                          {genre.genre_name}
-                        </Link>
-                      </li>
-                    ))}
+                  }}>
+                  {genres?.data?.map((genre) => (
+                    <li key={genre._id} style={{ marginBottom: '5px' }}>
+                      <Link
+                        to={`/genres/${genre._id}/${genre.genre_name}`}
+                        style={{ color: '#2a2a2a', fontWeight: '600' }}>
+                        {genre.genre_name}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </aside>
             </Col>
           </Row>
         </Container>
-        <ToastContainer position="bottom-left" />
       </section>
     </main>
   );

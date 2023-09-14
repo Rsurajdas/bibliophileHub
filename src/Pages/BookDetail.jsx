@@ -33,7 +33,7 @@ const BookDetail = () => {
       (userObj) => userObj._id === book.author._id
     );
     setIsFollowing(isFollowing);
-  }, []);
+  }, [book.author._id, user.following]);
 
   useEffect(() => {
     const isBookInShelf = shelves.some((shelf) => {
