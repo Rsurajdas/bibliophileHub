@@ -5,5 +5,6 @@ export const signOut = () => {
   const cookie = new Cookies();
   cookie.remove('token');
   cookie.remove('userId');
+
   return redirect('/signin');
 };

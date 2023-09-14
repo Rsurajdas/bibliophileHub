@@ -62,11 +62,11 @@ const Home = () => {
   return (
     <section style={{ padding: '50px 0' }}>
       <Container>
-        <Row className="gx-5">
+        <Row className='gx-5'>
           <Col md={3}>
-            <div className="currently-reading">
+            <div className='currently-reading'>
               <Title element={<h5>Currently Reading</h5>} />
-              <div className="mt-3">
+              <div className='mt-3'>
                 {!isLoading &&
                   reading.map((data) => (
                     <CurrentlyReading
