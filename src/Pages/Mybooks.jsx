@@ -203,7 +203,7 @@ const MyBooks = () => {
                           </div>
                         </div>
                       ))}
-                    {books.length === 0 && (
+                    {!books.length && (
                       <div
                         className="item"
                         style={{ gridColumn: '1 / 8', textAlign: 'center' }}
