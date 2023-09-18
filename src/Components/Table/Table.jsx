@@ -1,13 +1,65 @@
-import { useRouteLoaderData } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { useParams, useRouteLoaderData } from 'react-router-dom';
 import axios from 'axios';
 import TableRow from './TableRow';
 import { ToastContainer, toast } from 'react-toastify';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import LoadingScreen from '../../LoadingScreen';
 import 'react-toastify/dist/ReactToastify.css';
 import './Table.css';
 
-const Table = ({ books, removeBook, shelves, shelfId, shelfName }) => {
+const Table = () => {
   const token = useRouteLoaderData('token');
+  const { shelfId } = useParams();
+
+  const {
+    data: books,
+    isLoading: isBooksLoading,
+    isFetching: isBooksFetching,
+  } = useQuery({
+    queryKey: ['get-shelf-books', shelfId],
+    queryFn: () => {
+      return axios.get(
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/all-books-user-shelves/${
+          shelfId === 'all' ? '' : shelfId
+        }`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+    },
+    select: (data) => data.data.data.books,
+  });
+
+  const queryClient = useQueryClient();
+
+  const { isLoading: isRemoving, mutate } = useMutation({
+    mutationFn: async ({ shelf_id, bookId }) => {
+      const confirm = window.confirm(
+        'Are you sure want to remove this book from shelf?'
+      );
+      if (confirm) {
+        await axios.post(
+          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/remove-book/${shelf_id}/${bookId}`,
+          null,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          }
+        );
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['get-shelf-books'],
+      });
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
 
   const handleUpdateShelf = (currentId, bookId) => {
     return async (evt, newValue) => {
@@ -30,6 +82,8 @@ const Table = ({ books, removeBook, shelves, shelfId, shelfName }) => {
     };
   };
 
+  if (isBooksLoading || isBooksFetching) return <LoadingScreen />;
+
   return (
     <>
       <table>
@@ -46,19 +100,17 @@ const Table = ({ books, removeBook, shelves, shelfId, shelfName }) => {
           </tr>
         </thead>
         <tbody>
-          {books &&
-            books.map((book) => (
-              <TableRow
-                key={book.book._id}
-                book={book}
-                shelves={shelves}
-                shelfId={shelfId}
-                shelfName={shelfName}
-                removeBook={removeBook}
-                handleUpdateShelf={handleUpdateShelf}
-              />
-            ))}
-          {books.length === 0 && (
+          {books?.map((book) => (
+            <TableRow
+              key={book.book._id}
+              book={book}
+              shelfId={shelfId}
+              removeBook={mutate}
+              handleUpdateShelf={handleUpdateShelf}
+              isRemoving={isRemoving}
+            />
+          ))}
+          {!books?.length && (
             <tr>
               <td colSpan="8" style={{ textAlign: 'center' }}>
                 No book was found on the shelf.
@@ -67,18 +119,9 @@ const Table = ({ books, removeBook, shelves, shelfId, shelfName }) => {
           )}
         </tbody>
       </table>
-
       <ToastContainer position="bottom-left" />
     </>
   );
-};
-
-Table.propTypes = {
-  books: PropTypes.array,
-  removeBook: PropTypes.func,
-  shelves: PropTypes.array,
-  shelfId: PropTypes.string,
-  shelfName: PropTypes.string,
 };
 
 export default Table;

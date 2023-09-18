@@ -15,7 +15,6 @@ const TableRow = ({
   book,
   shelves,
   shelfId,
-  shelfName,
   removeBook,
   handleUpdateShelf,
 }) => {
@@ -75,7 +74,7 @@ const TableRow = ({
 
   return (
     <>
-      <tr key={book.book._id}>
+      <tr>
         <td style={{ width: '70px' }}>
           <div className="">
             <Link to={`/book/${book.book._id}`}>
@@ -126,7 +125,7 @@ const TableRow = ({
           }}
         >
           <div>
-            {!shelfName ? book.shelves[0].shelf_name : shelfName}{' '}
+            {book.shelf.shelf_name}{' '}
             <Button
               text="[edit]"
               variant="text"
@@ -147,19 +146,24 @@ const TableRow = ({
           )}
         </td>
         <td>
-          {!shelfId ? (
+          {shelfId === 'all' ? (
             <Button
               variant="text"
               text="X"
               onClick={() =>
-                removeBook(book.shelves[0].shelf_id, book.book._id)
+                removeBook({
+                  shelf_id: book.shelf.shelf_id,
+                  bookId: book.book._id,
+                })
               }
             />
           ) : (
             <Button
               variant="text"
               text="X"
-              onClick={() => removeBook(shelfId, book.book._id)}
+              onClick={() =>
+                removeBook({ shelf_id: shelfId, bookId: book.book._id })
+              }
             />
           )}
           <ToastContainer position="bottom-left" />
@@ -169,10 +173,7 @@ const TableRow = ({
             open={open}
             shelves={shelves}
             setOpen={setOpen}
-            handleShelf={handleUpdateShelf(
-              book.shelves[0].shelf_id,
-              book.book._id
-            )}
+            handleShelf={handleUpdateShelf(book.shelf.shelf_id, book.book._id)}
           />
         ) : (
           <SelectSelf
@@ -252,7 +253,6 @@ TableRow.propTypes = {
   handleRating: PropTypes.func,
   shelves: PropTypes.array,
   shelfId: PropTypes.string,
-  shelfName: PropTypes.string,
   removeBook: PropTypes.func,
   handleUpdateShelf: PropTypes.func,
   saveRating: PropTypes.number,

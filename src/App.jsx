@@ -11,6 +11,7 @@ import AuthRootLayout from './AuthLayout';
 import ErrorPage from './ErrorPage';
 import LoadingScreen from './LoadingScreen';
 import './App.css';
+import Table from './Components/Table/Table';
 const Genres = lazy(() => import('./Pages/Genres'));
 const Home = lazy(() => import('./Pages/Home'));
 const Genre = lazy(() => import('./Pages/Genre'));
@@ -103,6 +104,12 @@ const router = createBrowserRouter([
           </Suspense>
         ),
         loader: checkAuthLoader,
+        children: [
+          {
+            path: 'table/:shelfId?',
+            element: <Table />,
+          },
+        ],
       },
       {
         path: '/genres',
@@ -179,7 +186,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-      <ReactQueryDevtools initialIsOpen={false} position='bottom-right' />
+      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
     </QueryClientProvider>
   );
 }

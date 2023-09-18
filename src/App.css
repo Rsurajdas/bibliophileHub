@@ -22,32 +22,32 @@
   list-style: none;
 }
 
-.book-table {
+.book-shelf {
   width: 100%;
 }
 
-.book-table table {
+.book-shelf table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.book-table table tr {
+.book-shelf table tr {
   border-bottom: 1px solid #d3d3d3;
 }
 
-.book-table table tr th {
+.book-shelf table tr th {
   padding: 5px;
   font-size: 14px;
 }
 
-.book-table table tr td {
+.book-shelf table tr td {
   padding: 5px;
   text-align: left;
   vertical-align: top;
   font-size: 14px;
 }
 
-.book-table .cover-img {
+.book-shelf .cover-img {
   display: block;
   width: 60px;
 }
@@ -428,4 +428,16 @@
   100% {
     transform: translate(100%, 100%);
   }
+}
+
+.book-shelf-nav ul li a {
+  color: #2a2a2a;
+  transition: 0.3s;
+}
+
+.book-shelf-nav ul li a:hover,
+.book-shelf-nav ul li a.active {
+  text-decoration: underline;
+  font-weight: 600;
+  color: #1b651b;
 }

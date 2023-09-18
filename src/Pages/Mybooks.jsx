@@ -1,103 +1,28 @@
-import { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import SearchField from '../Components/Nav/SearchField';
-import MenuIcon from '@mui/icons-material/Menu';
-import WidgetsIcon from '@mui/icons-material/Widgets';
-import Button from '../Components/Btn/Button';
-import { Link, useRouteLoaderData } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import Table from '../Components/Table/Table';
-import Grid from '../Components/Layout/Grid';
+import { Link, NavLink, Outlet, useRouteLoaderData } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import AddShelf from '../Components/Shelf/AddShelf';
-import './../Components/Btn/Button.css';
+import '../Components/Btn/Button.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 const MyBooks = () => {
-  const [showTable, setShowTable] = useState(true);
-  const [books, setBooks] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [shelves, setShelves] = useState([]);
-  const [shelfId, setSelfId] = useState('');
-  const [shelfName, setShelfName] = useState('');
   const token = useRouteLoaderData('token');
 
-  const fetchBooks = async () => {
-    const res = await fetch(
-      'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/all-books-user-shelves',
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      }
-    );
-    const data = await res.json();
-    setIsLoading(false);
-    setBooks(data.data.books);
-  };
-
-  const fetchShelves = async () => {
-    const res = await fetch(
-      'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf',
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      }
-    );
-    const data = await res.json();
-    setIsLoading(false);
-    setShelves(data.data.shelves);
-  };
-
-  const fetchBooksByShelf = async (id) => {
-    const res = await fetch(
-      `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/${id}`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      }
-    );
-    const data = await res.json();
-    setIsLoading(false);
-    setSelfId(data.data.shelf._id);
-    setShelfName(data.data.shelf.shelf_name);
-    setBooks(data.data.shelf.books);
-  };
-
-  const removeBook = async (shelfId, bookId) => {
-    const confirm = window.confirm(
-      'Are you sure want to remove this book from shelf?'
-    );
-    if (confirm) {
-      try {
-        const res = await fetch(
-          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/remove-book/${shelfId}/${bookId}`,
-          {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-          }
-        );
-        await res.json();
-        window.location.reload(true);
-      } catch (err) {
-        toast.error(err.message);
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetchBooks();
-  }, []);
-
-  useEffect(() => {
-    fetchShelves();
-  }, []);
+  const { data: shelves } = useQuery({
+    queryKey: ['shelves'],
+    queryFn: () =>
+      axios.get(
+        'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf',
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      ),
+    select: (data) => data.data.data.shelves,
+  });
 
   return (
     <main>
@@ -121,20 +46,6 @@ const MyBooks = () => {
             <Col md={6}>
               <div className="d-flex gx-2 justify-content-end">
                 <SearchField sx={{ width: '250px', fontSize: '13px' }} />
-                <Button
-                  sx={{ padding: '5px' }}
-                  element={<MenuIcon />}
-                  onClick={() => {
-                    setShowTable(true);
-                  }}
-                />
-                <Button
-                  sx={{ padding: '5px' }}
-                  element={<WidgetsIcon />}
-                  onClick={() => {
-                    setShowTable(false);
-                  }}
-                />
               </div>
             </Col>
           </Row>
@@ -145,79 +56,31 @@ const MyBooks = () => {
                   BookShelves <Link to="/">Edit</Link>
                 </h4>
                 <div className="pb-2">
-                  <AddShelf setShelves={setShelves} />
+                  <AddShelf />
                 </div>
-                <ul className="mb-2">
-                  <li>
-                    <Button
-                      className="button"
-                      variant="text"
-                      text="All"
-                      onClick={fetchBooks}
-                    />
-                  </li>
-                  {!isLoading &&
-                    shelves &&
-                    shelves.map((shelf) => (
+                <nav className="book-shelf-nav">
+                  <ul className="mb-2">
+                    <li>
+                      <NavLink to="table/all">All</NavLink>
+                    </li>
+                    {shelves?.map((shelf) => (
                       <li key={shelf._id}>
-                        <Button
-                          className="button"
-                          variant="text"
-                          text={shelf.shelf_name}
-                          onClick={() => fetchBooksByShelf(shelf._id)}
-                        />
+                        <NavLink to={`table/${shelf._id}`}>
+                          {shelf.shelf_name}
+                        </NavLink>
                       </li>
                     ))}
-                </ul>
+                  </ul>
+                </nav>
               </div>
             </Col>
             <Col md={9}>
-              {showTable ? (
-                <div className="book-table">
-                  <Table
-                    books={books}
-                    removeBook={removeBook}
-                    shelves={shelves}
-                    shelfId={shelfId}
-                    shelfName={shelfName}
-                  />
-                </div>
-              ) : (
-                <div className="book-grid">
-                  <Grid
-                    sx={{
-                      gridTemplateColumns: 'repeat(7, 120px)',
-                      gridGap: '2.1%',
-                    }}
-                  >
-                    {books &&
-                      books.map((book) => (
-                        <div className="item" key={book.book._id}>
-                          <div className="item-img">
-                            <Link to={`/book/${book.book._id}`}>
-                              <img
-                                src={book.book.book_image}
-                                alt={book.book.title}
-                              />
-                            </Link>
-                          </div>
-                        </div>
-                      ))}
-                    {!books.length && (
-                      <div
-                        className="item"
-                        style={{ gridColumn: '1 / 8', textAlign: 'center' }}
-                      >
-                        No book was found on the shelf.
-                      </div>
-                    )}
-                  </Grid>
-                </div>
-              )}
+              <div className="book-shelf">
+                <Outlet />
+              </div>
             </Col>
           </Row>
         </Container>
-        <ToastContainer position="bottom-left" />
       </section>
     </main>
   );
