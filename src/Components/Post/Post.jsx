@@ -1,16 +1,17 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect, useRef } from 'react';
-import { useSelector, shallowEqual } from 'react-redux';
 import { Avatar } from '@mui/material';
 import { getUserId } from '../../utils/auth';
 import { Link, useRouteLoaderData } from 'react-router-dom';
 import Button from '../Btn/Button';
 import axios from 'axios';
 import './Post.css';
+import { useUser } from '../../Context/UserProvider';
+import LoadingScreen from '../../LoadingScreen';
 
 const Post = ({ post }) => {
+  const { user, isLoading } = useUser();
   const [liked, setLiked] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const token = useRouteLoaderData('token');
   const [postComments, setPostComments] = useState(post.comments);
   const userId = getUserId();
@@ -29,7 +30,7 @@ const Post = ({ post }) => {
         }
       );
       const data = await res.json();
-      setIsLoading(false);
+
       console.log(data);
       setLiked(data.post.likes.includes(user_id));
     } catch (err) {
@@ -55,12 +56,12 @@ const Post = ({ post }) => {
     };
   };
 
-  const { user } = useSelector((state) => state.user, shallowEqual);
-
   useEffect(() => {
     const isLiked = post.likes.some((userObj) => userObj._id === userId);
     setLiked(isLiked);
   }, [post.likes, userId]);
+
+  if (isLoading) return <LoadingScreen />;
 
   return (
     <>

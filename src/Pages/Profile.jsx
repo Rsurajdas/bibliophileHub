@@ -7,8 +7,8 @@ import Post from '../Components/Post/Post';
 import Title from '../Components/UI/Title';
 import CurrentlyReading from '../Components/Book/CurrentlyReading';
 import { getUserId } from '../utils/auth';
-import './../Components/Nav/Search.css';
 import LoadingScreen from '../LoadingScreen';
+import './../Components/Nav/Search.css';
 
 const Profile = () => {
   const token = useRouteLoaderData('token');

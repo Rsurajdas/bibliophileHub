@@ -5,19 +5,22 @@ import ModalDialog from '@mui/joy/ModalDialog';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import Button from '../Btn/Button';
+import { useShelves } from '../../hooks/useShelves';
 
-const SelectSelf = ({ shelves, setOpen, handleShelf, open }) => {
+const SelectSelf = ({ setOpen, handleShelf, open }) => {
+  const shelves = useShelves();
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
       <ModalDialog
-        aria-labelledby="size-modal-title"
-        aria-describedby="size-modal-description"
-        size="sm"
-      >
+        aria-labelledby='size-modal-title'
+        aria-describedby='size-modal-description'
+        size='sm'>
         <ModalClose />
-        <div className="shelf-container">
-          <h6 className="mb-4">Choose a shelf for this book</h6>
-          <Select placeholder="Choose a shelf" onChange={handleShelf}>
+        <div className='shelf-container'>
+          <h6 className='mb-4'>Choose a shelf for this book</h6>
+          <Select
+            placeholder='Choose a shelf'
+            onChange={(e, newValue) => handleShelf(e, newValue)}>
             {shelves &&
               shelves.map((shelf) => (
                 <Option value={shelf._id} key={shelf._id}>
@@ -26,8 +29,8 @@ const SelectSelf = ({ shelves, setOpen, handleShelf, open }) => {
               ))}
           </Select>
           <Button
-            text="Done"
-            variant="outline"
+            text='Done'
+            variant='outline'
             onClick={() => setOpen(false)}
             sx={{ marginTop: '10px' }}
           />
@@ -39,7 +42,6 @@ const SelectSelf = ({ shelves, setOpen, handleShelf, open }) => {
 
 SelectSelf.propTypes = {
   open: PropTypes.bool,
-  shelves: PropTypes.array,
   setOpen: PropTypes.func,
   handleShelf: PropTypes.func,
 };

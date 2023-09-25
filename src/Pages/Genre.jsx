@@ -31,9 +31,8 @@ const Genre = () => {
     select: (data) => data.data.data.books,
   });
 
-  if (genres.isLoading || books.isLoading) return <LoadingScreen />;
-
-  if (books.isFetching) return <LoadingScreen />;
+  if (genres.isLoading || books.isLoading || books.isFetching)
+    return <LoadingScreen />;
 
   return (
     <main>

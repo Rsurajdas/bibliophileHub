@@ -1,18 +1,12 @@
-import { useEffect } from 'react';
 import Navigation from './Components/Nav/Nav';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { getUserData } from './store/actions/userAction';
 import { Outlet } from 'react-router-dom';
+import { useUser } from './Context/UserProvider';
+import LoadingScreen from './LoadingScreen';
 
 const RootLayout = () => {
-  const dispatch = useDispatch();
+  const { user, isLoading } = useUser();
 
-  useEffect(() => {
-    dispatch(getUserData());
-  }, [dispatch]);
-
-  const { user } = useSelector((state) => state.user, shallowEqual);
-
+  if (isLoading) return <LoadingScreen />;
   return (
     <>
       <header>

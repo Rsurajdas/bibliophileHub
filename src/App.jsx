@@ -12,6 +12,7 @@ import ErrorPage from './ErrorPage';
 import LoadingScreen from './LoadingScreen';
 import './App.css';
 import Table from './Components/Table/Table';
+import { UserProvider } from './Context/UserProvider';
 const Genres = lazy(() => import('./Pages/Genres'));
 const Home = lazy(() => import('./Pages/Home'));
 const Genre = lazy(() => import('./Pages/Genre'));
@@ -185,8 +186,10 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+      <UserProvider>
+        <RouterProvider router={router} />
+      </UserProvider>
+      <ReactQueryDevtools initialIsOpen={false} position='bottom-right' />
     </QueryClientProvider>
   );
 }

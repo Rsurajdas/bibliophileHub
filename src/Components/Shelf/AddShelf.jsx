@@ -14,7 +14,6 @@ const style = {
 const AddShelf = () => {
   const token = useRouteLoaderData('token');
   const shelfRef = useRef(null);
-
   const queryClient = useQueryClient();
 
   const { isLoading, mutate: handleSubmit } = useMutation({

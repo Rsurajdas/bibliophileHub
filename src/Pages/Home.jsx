@@ -61,6 +61,9 @@ const Home = () => {
                     currentUser={true}
                   />
                 ))}
+                {!readings?.length && (
+                  <small>Currently Reading Shelf is empty!</small>
+                )}
               </div>
             </div>
           </Col>

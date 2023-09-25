@@ -2,15 +2,17 @@ import Button from '../Btn/Button';
 import PropTypes from 'prop-types';
 import { Link, useRouteLoaderData } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { useSelector, shallowEqual } from 'react-redux';
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useUser } from '../../Context/UserProvider';
+import LoadingScreen from '../../LoadingScreen';
 
 const SearchProfileList = ({ profile }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isFriend, setIsFriend] = useState(false);
 
-  const { user } = useSelector((state) => state.user, shallowEqual);
+  const { user, isLoading } = useUser();
 
   const token = useRouteLoaderData('token');
 
@@ -49,31 +51,32 @@ const SearchProfileList = ({ profile }) => {
     }
   };
 
+  if (isLoading) return <LoadingScreen />;
+
   return (
     <li>
-      <div className="friend-item">
-        <div className="friend-left">
-          <div className="friend-img">
+      <div className='friend-item'>
+        <div className='friend-left'>
+          <div className='friend-img'>
             <img src={profile.photo} alt={profile.name} />
           </div>
-          <div className="friend-detail ps-2">
+          <div className='friend-detail ps-2'>
             <h6
-              className=""
+              className=''
               style={{
                 fontWeight: 700,
                 fontSize: '14px',
                 margin: '0',
-              }}
-            >
+              }}>
               <Link to={`/profile/${profile._id}`}>{profile.name}</Link>
             </h6>
-            <div className="">{profile.email}</div>
+            <div className=''>{profile.email}</div>
           </div>
         </div>
-        <div className="friend-right">
+        <div className='friend-right'>
           <Button
             text={isFriend ? 'unfriend' : 'add friend'}
-            variant="solid"
+            variant='solid'
             sx={{
               display: 'block',
               marginBottom: '10px',
@@ -81,7 +84,7 @@ const SearchProfileList = ({ profile }) => {
           />
           <Button
             text={isFollowing ? 'following' : 'follow'}
-            variant="solid"
+            variant='solid'
             sx={{
               display: 'block',
               backgroundColor: '#207e20',
@@ -91,7 +94,7 @@ const SearchProfileList = ({ profile }) => {
           />
         </div>
       </div>
-      <ToastContainer position="bottom-left" />
+      <ToastContainer position='bottom-left' />
     </li>
   );
 };

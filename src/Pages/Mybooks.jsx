@@ -1,28 +1,13 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import SearchField from '../Components/Nav/SearchField';
-import { Link, NavLink, Outlet, useRouteLoaderData } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { Link, NavLink, Outlet } from 'react-router-dom';
 import AddShelf from '../Components/Shelf/AddShelf';
 import '../Components/Btn/Button.css';
 import 'react-toastify/dist/ReactToastify.css';
+import { useShelves } from '../hooks/useShelves';
 
 const MyBooks = () => {
-  const token = useRouteLoaderData('token');
-
-  const { data: shelves } = useQuery({
-    queryKey: ['shelves'],
-    queryFn: () =>
-      axios.get(
-        'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf',
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        }
-      ),
-    select: (data) => data.data.data.shelves,
-  });
+  const shelves = useShelves();
 
   return (
     <main>

@@ -61,27 +61,6 @@ const Table = () => {
     },
   });
 
-  const handleUpdateShelf = (currentId, bookId) => {
-    return async (evt, newValue) => {
-      try {
-        const shelfData = {
-          fromShelfId: currentId,
-          toShelfId: newValue,
-        };
-        const res = await axios.patch(
-          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/move-book/${bookId}`,
-          shelfData,
-          { headers: { 'Authorization': `Bearer ${token}` } }
-        );
-        const { data } = res;
-        toast.success(data.message);
-        window.location.reload();
-      } catch (err) {
-        toast.error(err.message);
-      }
-    };
-  };
-
   if (isBooksLoading || isBooksFetching) return <LoadingScreen />;
 
   return (
@@ -106,20 +85,19 @@ const Table = () => {
               book={book}
               shelfId={shelfId}
               removeBook={mutate}
-              handleUpdateShelf={handleUpdateShelf}
               isRemoving={isRemoving}
             />
           ))}
           {!books?.length && (
             <tr>
-              <td colSpan="8" style={{ textAlign: 'center' }}>
+              <td colSpan='8' style={{ textAlign: 'center' }}>
                 No book was found on the shelf.
               </td>
             </tr>
           )}
         </tbody>
       </table>
-      <ToastContainer position="bottom-left" />
+      <ToastContainer position='bottom-left' />
     </>
   );
 };
