@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import RootLayout from './RootLayout';
 import { signUpAction } from './Actions/signUpAction';
 import { bookDetailLoader } from './Loaders/bookDetailLoader';
@@ -189,7 +189,7 @@ function App() {
       <UserProvider>
         <RouterProvider router={router} />
       </UserProvider>
-      <ReactQueryDevtools initialIsOpen={false} position='bottom-right' />
+      {/* <ReactQueryDevtools initialIsOpen={false} position='bottom-right' /> */}
     </QueryClientProvider>
   );
 }
