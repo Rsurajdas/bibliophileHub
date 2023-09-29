@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from '@tanstack/react-query';
 import { getAuthToken, getUserId } from '../utils/auth';
@@ -10,8 +10,35 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const token = getAuthToken();
   const userId = getUserId();
-  const { data, isLoading } = useQuery({
-    queryKey: ['user'],
+
+  // const [user, setUser] = useState({});
+  // const [isLoading, setIsLoading] = useState(false);
+
+  // const fetchUser = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     const res = await axios.get(
+  //       `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/get-user/${userId}`,
+  //       {
+  //         headers: {
+  //           'Authorization': `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     const { data } = res;
+  //     setUser(data.data.user);
+  //     setIsLoading(false);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchUser();
+  // }, []);
+
+  const { data: user, isLoading } = useQuery({
+    queryKey: ['current-user', userId],
     queryFn: () => {
       return axios.get(
         `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/get-user/${userId}`,
@@ -23,9 +50,11 @@ export const UserProvider = ({ children }) => {
       );
     },
     select: (data) => data.data.data.user,
+    enabled: !!userId,
   });
   return (
-    <UserContext.Provider value={{ user: data, isLoading }}>
+    <UserContext.Provider value={{ user, isLoading }}>
+      {console.log(userId)}
       {children}
     </UserContext.Provider>
   );

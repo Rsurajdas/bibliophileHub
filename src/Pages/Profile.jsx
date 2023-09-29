@@ -106,19 +106,19 @@ const Profile = () => {
                         </div>
                         <div className=''>
                           <span style={{ fontWeight: 700 }}>Friends:</span>{' '}
-                          <Link to={`/friends/${user._id}`}>
+                          <Link to={`/user/friends/${user._id}`}>
                             {user.friends?.length} friends
                           </Link>
                         </div>
                         <div className=''>
                           <span style={{ fontWeight: 700 }}>Followers:</span>{' '}
-                          <Link to={`/followers/${profileId}`}>
+                          <Link to={`/user/followers/${profileId}`}>
                             {user.followers?.length} followers
                           </Link>
                         </div>
                         <div className=''>
                           <span style={{ fontWeight: 700 }}>Following:</span>{' '}
-                          <Link to={`/following/${user._id}`}>
+                          <Link to={`/user/following/${user._id}`}>
                             {user.following?.length} following
                           </Link>
                         </div>

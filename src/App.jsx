@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-// import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import RootLayout from './RootLayout';
 import { signUpAction } from './Actions/signUpAction';
 import { bookDetailLoader } from './Loaders/bookDetailLoader';
@@ -12,7 +12,7 @@ import ErrorPage from './ErrorPage';
 import LoadingScreen from './LoadingScreen';
 import './App.css';
 import Table from './Components/Table/Table';
-import { UserProvider } from './Context/UserProvider';
+
 const Genres = lazy(() => import('./Pages/Genres'));
 const Home = lazy(() => import('./Pages/Home'));
 const Genre = lazy(() => import('./Pages/Genre'));
@@ -23,9 +23,10 @@ const BookDetail = lazy(() => import('./Pages/BookDetail'));
 const Profile = lazy(() => import('./Pages/Profile'));
 const Friends = lazy(() => import('./Pages/Friends'));
 const Following = lazy(() => import('./Pages/Following'));
-const Followers = lazy(() => import('./Pages/Follower'));
+const Followers = lazy(() => import('./Pages/Followers'));
 const RequestPending = lazy(() => import('./Pages/RequestPending'));
 const AddFriend = lazy(() => import('./Pages/AddFriend'));
+const SocialLayout = lazy(() => import('./Pages/SocialLayout'));
 
 const router = createBrowserRouter([
   {
@@ -54,31 +55,38 @@ const router = createBrowserRouter([
         loader: checkAuthLoader,
       },
       {
-        path: '/friends/:profileId',
+        path: '/user',
         element: (
           <Suspense fallback={<LoadingScreen />}>
-            <Friends />
+            <SocialLayout />
           </Suspense>
         ),
-        loader: checkAuthLoader,
-      },
-      {
-        path: '/following/:profileId',
-        element: (
-          <Suspense fallback={<LoadingScreen />}>
-            <Following />
-          </Suspense>
-        ),
-        loader: checkAuthLoader,
-      },
-      {
-        path: '/followers/:profileId',
-        element: (
-          <Suspense fallback={<LoadingScreen />}>
-            <Followers />
-          </Suspense>
-        ),
-        loader: checkAuthLoader,
+        children: [
+          {
+            path: 'friends/:profileId',
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Friends />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'following/:profileId',
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Following />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'followers/:profileId',
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Followers />
+              </Suspense>
+            ),
+          },
+        ],
       },
       {
         path: '/request-pending/:profileId',
@@ -186,10 +194,9 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <UserProvider>
-        <RouterProvider router={router} />
-      </UserProvider>
-      {/* <ReactQueryDevtools initialIsOpen={false} position='bottom-right' /> */}
+      <RouterProvider router={router} />
+
+      <ReactQueryDevtools initialIsOpen={false} position='bottom-right' />
     </QueryClientProvider>
   );
 }

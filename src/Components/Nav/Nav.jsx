@@ -10,32 +10,32 @@ import './Nav.css';
 function Navigation({ user }) {
   const token = useRouteLoaderData('token');
   return (
-    <nav className="custom-nav">
+    <nav className='custom-nav'>
       <Container>
-        <div className="custom-navbar">
-          <div className="nav-brand">
+        <div className='custom-navbar'>
+          <div className='nav-brand'>
             <img
-              src="/images/bibliophileHub.png"
-              alt="bibliophileHub logo"
-              className="brand-logo"
+              src='/images/bibliophileHub.png'
+              alt='bibliophileHub logo'
+              className='brand-logo'
             />
           </div>
           <NavItems>
-            <NavList path="/" text="Feeds" />
-            <NavList path="/mybooks/table/all" text="My Books" />
-            <NavList path="/genres" text="Genres" />
+            <NavList path='/' text='Feeds' />
+            <NavList path='/mybooks/table/all' text='My Books' />
+            <NavList path='/genres' text='Genres' />
           </NavItems>
           <SearchField sx={{ width: '400px', fontSize: '16px' }} />
           {token ? (
             <>
-              <div className="nav-icon">
-                <Link to={`/friends/${user._id}`}>
-                  <img src="/images/icn_nav_friend.svg" alt="profile image" />
+              <div className='nav-icon'>
+                <Link to={`/user/friends/${user._id}`}>
+                  <img src='/images/icn_nav_friend.svg' alt='profile image' />
                 </Link>
               </div>
-              <div className="nav-icon">
+              <div className='nav-icon'>
                 <Avatar alt={user.name} src={user.photo} />
-                <div className="dropdown-wrapper">
+                <div className='dropdown-wrapper'>
                   <ul>
                     <fieldset>
                       <legend>{user.name}</legend>
@@ -43,11 +43,11 @@ function Navigation({ user }) {
                         <Link to={`/profile/${user._id}`}>Profile</Link>
                       </li>
                       <li>
-                        <Link to={`/friends/${user._id}`}>Friends</Link>
+                        <Link to={`/user/friends/${user._id}`}>Friends</Link>
                       </li>
                       <li>
-                        <Form method="post" action="/signout">
-                          <button>Sign out</button>
+                        <Form method='post' action='/signout'>
+                          <button type='submit'>Sign out</button>
                         </Form>
                       </li>
                     </fieldset>
@@ -57,8 +57,8 @@ function Navigation({ user }) {
             </>
           ) : (
             <NavItems>
-              <NavList path="/signin" text="Sing in" />
-              <NavList path="/signup" text="Sing up" />
+              <NavList path='/signin' text='Sing in' />
+              <NavList path='/signup' text='Sing up' />
             </NavItems>
           )}
         </div>

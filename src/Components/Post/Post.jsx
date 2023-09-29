@@ -6,11 +6,10 @@ import { Link, useRouteLoaderData } from 'react-router-dom';
 import Button from '../Btn/Button';
 import axios from 'axios';
 import './Post.css';
-import { useUser } from '../../Context/UserProvider';
-import LoadingScreen from '../../LoadingScreen';
+import { useSelector, shallowEqual } from 'react-redux';
 
 const Post = ({ post }) => {
-  const { user, isLoading } = useUser();
+  const { user } = useSelector((state) => state.user, shallowEqual);
   const [liked, setLiked] = useState(false);
   const token = useRouteLoaderData('token');
   const [postComments, setPostComments] = useState(post.comments);
@@ -30,8 +29,6 @@ const Post = ({ post }) => {
         }
       );
       const data = await res.json();
-
-      console.log(data);
       setLiked(data.post.likes.includes(user_id));
     } catch (err) {
       console.error(err.message);
@@ -60,8 +57,6 @@ const Post = ({ post }) => {
     const isLiked = post.likes.some((userObj) => userObj._id === userId);
     setLiked(isLiked);
   }, [post.likes, userId]);
-
-  if (isLoading) return <LoadingScreen />;
 
   return (
     <>

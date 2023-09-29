@@ -5,14 +5,13 @@ import { useState, useEffect } from 'react';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useUser } from '../../Context/UserProvider';
-import LoadingScreen from '../../LoadingScreen';
+import { useSelector, shallowEqual } from 'react-redux';
 
 const SearchProfileList = ({ profile }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isFriend, setIsFriend] = useState(false);
 
-  const { user, isLoading } = useUser();
+  const { user } = useSelector((state) => state.user, shallowEqual);
 
   const token = useRouteLoaderData('token');
 
@@ -50,8 +49,6 @@ const SearchProfileList = ({ profile }) => {
       toast.error(err.message);
     }
   };
-
-  if (isLoading) return <LoadingScreen />;
 
   return (
     <li>

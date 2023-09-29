@@ -1,14 +1,13 @@
 import { useParams } from 'react-router-dom';
+import ProfileList from '../Components/Profile/ProfileList';
 import { useSocials } from '../hooks/useSocials';
 import LoadingScreen from '../LoadingScreen';
-import ProfileList from '../Components/Profile/ProfileList';
 import Title from '../Components/UI/Title';
 import { useSocialHandleFunc } from '../hooks/useSocialHandleFunc.js';
 
-const Friends = () => {
+const Followers = () => {
   const { profileId } = useParams();
-  const { data, isLoading } = useSocials('friends', profileId);
-  const [handleUnfriend] = useSocialHandleFunc('unfriend');
+  const { data, isLoading } = useSocials('followers', profileId);
 
   if (isLoading) return <LoadingScreen />;
 
@@ -23,17 +22,16 @@ const Friends = () => {
                 fontWeight: 700,
                 fontSize: '14px',
               }}>
-              Friends
+              Followers
             </h6>
           }
         />
         <ul>
-          {data?.map((friend) => (
+          {data.map((friend) => (
             <ProfileList
               key={friend._id}
               profile={friend}
-              btnName='unfriend'
-              handleFunc={handleUnfriend}
+              btnName='following'
             />
           ))}
         </ul>
@@ -42,4 +40,4 @@ const Friends = () => {
   );
 };
 
-export default Friends;
+export default Followers;
