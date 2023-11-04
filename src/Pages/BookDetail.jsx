@@ -1,55 +1,108 @@
 import { useState, useEffect } from 'react';
+import { Link, useRouteLoaderData, useParams } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
-import { useLoaderData, Link, useRouteLoaderData } from 'react-router-dom';
+import { DownOutlined } from '@ant-design/icons';
+import { Dropdown, Space, Spin } from 'antd';
 import axios from 'axios';
+import { Avatar } from '@mui/material';
+import { ToastContainer, toast } from 'react-toastify';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Button from './../Components/Btn/Button';
 import Capitalize from 'lodash.capitalize';
 import PostBtn from '../Components/Post/PostBtn';
 import parse from 'html-react-parser';
 import Title from './../Components/UI/Title';
 import Rating from '@mui/material/Rating';
-import { Avatar } from '@mui/material';
-import { ToastContainer, toast } from 'react-toastify';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
 import SelectSelf from '../Components/Shelf/SelectShelf';
+import LoadingScreen from '../LoadingScreen';
+import { getUserId } from '../utils/auth';
+import { useShelves } from '../hooks/useShelves';
+import 'react-toastify/dist/ReactToastify.css';
 import './../Components/Post/Post.css';
 import './../Components/Btn/Button.css';
-import 'react-toastify/dist/ReactToastify.css';
 
 const BookDetail = () => {
-  const { book, review, user, shelves } = useLoaderData();
   const [isFollowing, setIsFollowing] = useState(false);
   const [isShelved, setIsShelved] = useState(false);
-  const [show, setShow] = useState(false);
   const [saveRating, setSavRating] = useState(0);
   const [open, setOpen] = useState(false);
   const token = useRouteLoaderData('token');
+  const { id } = useParams();
+  const userId = getUserId();
+  const { shelves } = useShelves();
+  const queryClient = useQueryClient();
+
+  const {
+    data,
+    isLoading: bookLoading,
+    isFetching,
+  } = useQuery({
+    queryKey: ['book-detail', id, token],
+    queryFn: () => {
+      return axios.get(
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/${id}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+    },
+    select: (data) => data.data.data,
+  });
+
+  const {
+    data: user,
+    isLoading: userLoading,
+    isFetching: userFetching,
+  } = useQuery({
+    queryKey: ['get-user', userId, token],
+    queryFn: () => {
+      return axios.get(
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/get-user/${userId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+    },
+    select: (data) => data.data.data.user,
+  });
+
+  const items = data?.book.buy_links.map((item) => {
+    return {
+      key: item._id,
+      label: (
+        <a target="_blank" rel="noopener noreferrer" href={item.url}>
+          {item.name}
+        </a>
+      ),
+    };
+  });
 
   useEffect(() => {
-    const isFollowing = user.following.some(
-      (userObj) => userObj._id === book.author._id
+    const following = user?.following.some(
+      (userObj) => userObj._id === data?.book.author._id
     );
-    setIsFollowing(isFollowing);
-  }, [book.author._id, user.following]);
+    setIsFollowing(following);
+  }, [data?.book.author._id, user?.following]);
 
   useEffect(() => {
-    const isBookInShelf = shelves.some((shelf) => {
-      return shelf.books.some((bookObj) => bookObj.book === book._id);
+    const isBookInShelf = shelves?.some((shelf) => {
+      return shelf.books.some((bookObj) => bookObj.book === data?.book._id);
     });
 
     setIsShelved(isBookInShelf);
-  }, [book._id, shelves]);
+  }, [data?.book._id, shelves]);
 
   useEffect(() => {
-    if (review[0]?.rating) {
-      setSavRating(review[0].rating);
+    if (data?.review[0]?.rating) {
+      setSavRating(data?.review[0].rating);
     } else {
       setSavRating(0);
     }
-  }, [review]);
+  }, [data?.review]);
 
   const handleRating = async (e, newValue) => {
     try {
@@ -58,7 +111,7 @@ const BookDetail = () => {
           rating: newValue,
         };
         const res = await axios.post(
-          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/${book._id}/reviews`,
+          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/${data?.book._id}/reviews`,
           ratingData,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
@@ -70,7 +123,7 @@ const BookDetail = () => {
           rating: newValue,
         };
         const res = await axios.patch(
-          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/${book._id}/reviews`,
+          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/${data?.book._id}/reviews`,
           ratingData,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
@@ -83,45 +136,49 @@ const BookDetail = () => {
     }
   };
 
-  const handleFollowToggle = async (id) => {
-    try {
+  const { mutate: followToggle } = useMutation({
+    mutationFn: async ({ id }) => {
       const action = isFollowing ? 'unfollow' : 'follow';
-      const res = await fetch(
+      return axios.post(
         `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/${action}/${id}`,
+        null,
         {
-          method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         }
       );
-      await res.json();
-      setIsFollowing(!isFollowing);
-      // window.location.reload(true);
-      toast.success(res.message);
-    } catch (err) {
-      toast.error(err.message);
-    }
-  };
+    },
+    onSuccess: () => {
+      setIsFollowing((prevState) => !prevState);
+      queryClient.invalidateQueries({
+        queryKey: ['book-detail', id, token],
+      });
+    },
+  });
 
-  const handleAddToShelf = async (evt, newValue) => {
-    try {
-      const res = await fetch(
-        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/add-book/${newValue}/${book._id}`,
+  const { isLoading: isAdding, mutate: addToSelf } = useMutation({
+    mutationFn: async ({ e, newValue }) => {
+      console.log(e, newValue);
+      await axios.post(
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/add-book/${newValue}/${data?.book._id}`,
+        null,
         {
-          method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         }
       );
-      const data = res.json();
-      toast.done(data.message);
+    },
+    onSuccess: () => {
       setIsShelved(true);
-    } catch (err) {
-      toast.error(err.message);
-    }
-  };
+      queryClient.invalidateQueries({
+        queryKey: ['book-detail', id, token],
+      });
+    },
+  });
+
+  if (bookLoading || userLoading) return <LoadingScreen />;
 
   return (
     <main>
@@ -129,63 +186,74 @@ const BookDetail = () => {
         <Container>
           <Row>
             <Col md={3}>
-              <div className='detail-aside text-center'>
-                <div className='detail-img '>
-                  <img src={book.book_image} alt={book.title} />
+              <div className="detail-aside text-center">
+                <div className="detail-img ">
+                  <img src={data?.book.book_image} alt={data?.book.title} />
                 </div>
                 <PostBtn
                   sx={{ width: '250px', margin: '2rem auto 1rem' }}
-                  bookId={book._id}
+                  bookId={data?.book._id}
                   isShelved={isShelved}
+                  isFetching={isAdding}
                   setOpen={setOpen}
                 />
                 <div
-                  className='btn-wrapper'
-                  style={{ width: '250px', margin: '1rem auto 0.2rem' }}>
+                  className="btn-wrapper"
+                  style={{ width: '250px', margin: '1rem auto 0.5rem' }}
+                >
                   <a
-                    href={book.amazon_product_url}
+                    href={data?.book.amazon_product_url}
                     style={{ width: '250px', borderRadius: '2.5rem' }}
-                    className='button button-outline text-center'
-                    target='_blank'
-                    rel='noopener noreferrer'>
+                    className="button button-outline text-center"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Buy on Amazon IN
                   </a>
                 </div>
-                <Button
-                  text='More Option'
-                  variant='text'
-                  type='button'
-                  sx={{ marginBottom: '1rem' }}
-                  onClick={() => setShow(true)}
-                />
-                <div className='book-rating'>
+                <Dropdown
+                  menu={{
+                    items,
+                  }}
+                >
+                  <a onClick={(e) => e.preventDefault()}>
+                    <Space>
+                      More Links
+                      <DownOutlined />
+                    </Space>
+                  </a>
+                </Dropdown>
+                <div className="book-rating" style={{ marginTop: '0.3rem' }}>
                   <Rating
-                    size='large'
+                    size="large"
                     onChange={handleRating}
                     value={saveRating}
                   />
                 </div>
-                <Button type='button' variant='text' text='Rate this book' />
+                <Button type="button" variant="text" text="Rate this book" />
               </div>
             </Col>
             <Col md={9}>
-              <div className='detail-content'>
-                <h1 className='detail-title'>
-                  {Capitalize(book.title.toLowerCase())}
+              <div className="detail-content">
+                <h1 className="detail-title">
+                  {Capitalize(data?.book.title.toLowerCase())}
                 </h1>
-                <div className='detail-author'>{book.author.name}</div>
+                <div className="detail-author">{data?.book.author.name}</div>
                 <Rating
-                  name='read-only'
+                  name="read-only"
                   value={4}
                   readOnly
-                  size='large'
+                  size="large"
                   sx={{ padding: '8px', margin: '-8px -8px 0 -8px' }}
                 />
-                <div className='detail-content'>{parse(book.description)}</div>
+                <div className="detail-content">
+                  {parse(data?.book.description)}
+                </div>
                 <ul
-                  className='detail-genres mb-4 border-bottom pb-4 mt-3'
-                  style={{ fontSize: '13px' }}>
-                  {book.genres.map((genre) => (
+                  className="detail-genres mb-4 border-bottom pb-4 mt-3"
+                  style={{ fontSize: '13px' }}
+                >
+                  {data?.book.genres.map((genre) => (
                     <li key={genre._id}>
                       <Link to={`/genres/${genre._id}/${genre.genre_name}`}>
                         {genre.genre_name}
@@ -193,43 +261,48 @@ const BookDetail = () => {
                     </li>
                   ))}
                 </ul>
-                <div className='book-edition pb-4 border-bottom'>
+                <div className="book-edition pb-4 border-bottom">
                   <Title element={<h6>This edition</h6>} />
-                  <div className='edition-item'>
+                  <div className="edition-item">
                     <dt>Published</dt>
-                    <dd>by {book.publisher}</dd>
+                    <dd>by {data?.book.publisher}</dd>
                   </div>
-                  <div className='edition-item'>
+                  <div className="edition-item">
                     <dt>ISBN</dt>
                     <dd>
-                      {book.primary_isbn13} (ISBN10: {book.primary_isbn10})
+                      {data?.book.primary_isbn13} (ISBN10:{' '}
+                      {data?.book.primary_isbn10})
                     </dd>
                   </div>
                 </div>
-                <div className='author  mt-4 border-bottom pb-4'>
-                  <Title element={<h5 className='mb-3'>About the author</h5>} />
-                  <div className='d-flex align-items-center'>
-                    <div className='author-left d-flex align-items-center'>
-                      <div className='author-image'>
+                <div className="author  mt-4 border-bottom pb-4">
+                  <Title element={<h5 className="mb-3">About the author</h5>} />
+                  <div className="d-flex align-items-center">
+                    <div className="author-left d-flex align-items-center">
+                      <div className="author-image">
                         <Avatar
-                          alt={book.author.name}
-                          src={book.author.photo}
+                          alt={data?.book.author.name}
+                          src={data?.book.author.photo}
                           sx={{ width: '100%', height: '100%' }}
                         />
                       </div>
-                      <div className='author-details'>
-                        <h6>{book.author.name}</h6>
-                        <div className=''>
-                          {book.author.followers.length} followers
+                      <Spin spinning={userFetching || isFetching}>
+                        <div className="author-details">
+                          <h6>{data?.book.author.name}</h6>
+                          <div className="">
+                            {data?.book.author.followers.length} followers
+                          </div>
                         </div>
-                      </div>
+                      </Spin>
                     </div>
-                    <div className='author-right'>
+                    <div className="author-right">
                       <Button
-                        type='button'
-                        variant='solid'
+                        type="button"
+                        variant="solid"
                         text={isFollowing ? 'Following' : 'Follow'}
-                        onClick={() => handleFollowToggle(book.author._id)}
+                        onClick={() =>
+                          followToggle({ id: data?.book.author._id })
+                        }
                       />
                     </div>
                   </div>
@@ -239,26 +312,8 @@ const BookDetail = () => {
           </Row>
         </Container>
       </section>
-      <SelectSelf
-        setOpen={setOpen}
-        shelves={shelves}
-        handleShelf={handleAddToShelf}
-        open={open}
-      />
-      <ToastContainer position='bottom-left' />
-
-      <Dialog onClose={() => setShow(false)} open={show}>
-        <DialogTitle>Buy Links</DialogTitle>
-        <List>
-          {book.buy_links.map((link) => (
-            <ListItem key={link._id}>
-              <a href={link.url} target='_blank' rel='noopener noreferrer'>
-                {link.name}
-              </a>
-            </ListItem>
-          ))}
-        </List>
-      </Dialog>
+      <SelectSelf setOpen={setOpen} handleShelf={addToSelf} open={open} />
+      <ToastContainer position="bottom-left" />
     </main>
   );
 };

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const PostBtn = ({ sx, isShelved, setOpen }) => {
+const PostBtn = ({ sx, isShelved, setOpen, isFetching }) => {
   return (
     <div className="btn-wrapper" style={sx}>
       <button
@@ -11,11 +11,12 @@ const PostBtn = ({ sx, isShelved, setOpen }) => {
             : { backgroundColor: '#409d69', color: '#f4f4f4' }
         }
         onClick={() => setOpen(true)}
+        disabled={isFetching}
       >
-        {isShelved ? (
+        {isShelved && !isFetching ? (
           <i className="fa-solid fa-check" style={{ color: '#409d69' }}></i>
         ) : null}{' '}
-        {!isShelved ? 'Add to Shelves' : 'Added'}
+        {!isShelved ? 'Add to Shelves' : isFetching ? 'Adding...' : 'Added'}
       </button>
     </div>
   );
@@ -26,6 +27,7 @@ PostBtn.propTypes = {
   bookId: PropTypes.string,
   isShelved: PropTypes.bool,
   setOpen: PropTypes.func,
+  isFetching: PropTypes.bool,
 };
 
 export default PostBtn;

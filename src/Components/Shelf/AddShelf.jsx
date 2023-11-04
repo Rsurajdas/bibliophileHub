@@ -45,25 +45,26 @@ const AddShelf = () => {
   });
 
   return (
-    <form method='POST' onSubmit={handleSubmit}>
-      <div className='d-flex align-items-end' style={style}>
+    <form method="POST" onSubmit={handleSubmit}>
+      <div className="d-flex align-items-end" style={style}>
         <input
-          type='text'
-          name='shelf'
-          id='shelf'
-          className='form-input'
-          placeholder='Add shelf'
+          type="text"
+          name="shelf"
+          id="shelf"
+          className="form-input"
+          placeholder="Add shelf"
           ref={shelfRef}
         />
 
         <button
-          className='button button-solid'
-          type='submit'
-          disabled={isLoading}>
+          className="button button-solid"
+          type="submit"
+          disabled={isLoading}
+        >
           {isLoading ? 'Adding...' : 'Add'}
         </button>
       </div>
-      <ToastContainer position='bottom-left' />
+      <ToastContainer position="bottom-left" />
     </form>
   );
 };

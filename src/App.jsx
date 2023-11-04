@@ -2,16 +2,15 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import RootLayout from './RootLayout';
 import { signUpAction } from './Actions/signUpAction';
-import { bookDetailLoader } from './Loaders/bookDetailLoader';
 import { checkAuthLoader, tokenLoader } from './utils/auth';
 import { signOut } from './Pages/SignOut';
+import RootLayout from './RootLayout';
 import AuthRootLayout from './AuthLayout';
 import ErrorPage from './ErrorPage';
 import LoadingScreen from './LoadingScreen';
-import './App.css';
 import Table from './Components/Table/Table';
+import './App.css';
 
 const Genres = lazy(() => import('./Pages/Genres'));
 const Home = lazy(() => import('./Pages/Home'));
@@ -154,7 +153,6 @@ const router = createBrowserRouter([
                 <BookDetail />
               </Suspense>
             ),
-            loader: bookDetailLoader,
           },
         ],
       },
@@ -195,8 +193,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-
-      <ReactQueryDevtools initialIsOpen={false} position='bottom-right' />
+      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
     </QueryClientProvider>
   );
 }

@@ -8,29 +8,30 @@ import Button from '../Btn/Button';
 import { useShelves } from '../../hooks/useShelves';
 
 const SelectSelf = ({ setOpen, handleShelf, open }) => {
-  const shelves = useShelves();
+  const { shelves } = useShelves();
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
       <ModalDialog
-        aria-labelledby='size-modal-title'
-        aria-describedby='size-modal-description'
-        size='sm'>
+        aria-labelledby="size-modal-title"
+        aria-describedby="size-modal-description"
+        size="sm"
+      >
         <ModalClose />
-        <div className='shelf-container'>
-          <h6 className='mb-4'>Choose a shelf for this book</h6>
+        <div className="shelf-container">
+          <h6 className="mb-4">Choose a shelf for this book</h6>
           <Select
-            placeholder='Choose a shelf'
-            onChange={(e, newValue) => handleShelf(e, newValue)}>
-            {shelves &&
-              shelves.map((shelf) => (
-                <Option value={shelf._id} key={shelf._id}>
-                  {shelf.shelf_name}
-                </Option>
-              ))}
+            placeholder="Choose a shelf"
+            onChange={(e, newValue) => handleShelf({ e, newValue })}
+          >
+            {shelves?.map((shelf) => (
+              <Option value={shelf._id} key={shelf._id}>
+                {shelf.shelf_name}
+              </Option>
+            ))}
           </Select>
           <Button
-            text='Done'
-            variant='outline'
+            text="Done"
+            variant="outline"
             onClick={() => setOpen(false)}
             sx={{ marginTop: '10px' }}
           />

@@ -7,13 +7,14 @@ import Title from './../Components/UI/Title';
 import CurrentlyReading from '../Components/Book/CurrentlyReading';
 import { getUserId } from '../utils/auth';
 import LoadingScreen from '../LoadingScreen';
+import { Empty } from 'antd';
 
 const Home = () => {
   const token = useRouteLoaderData('token');
   const userId = getUserId();
 
   const { data: posts, isLoading: postsLoading } = useQuery({
-    queryKey: ['social-posts'],
+    queryKey: ['social-posts', token],
     queryFn: () => {
       return axios.get(
         'https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/posts/social-posts',
@@ -49,11 +50,11 @@ const Home = () => {
   return (
     <section style={{ padding: '50px 0' }}>
       <Container>
-        <Row className='gx-5'>
+        <Row className="gx-5">
           <Col md={3}>
-            <div className='currently-reading'>
+            <div className="currently-reading">
               <Title element={<h5>Currently Reading</h5>} />
-              <div className='mt-3'>
+              <div className="mt-3">
                 {readings?.map((data) => (
                   <CurrentlyReading
                     key={data.book._id}
@@ -61,9 +62,7 @@ const Home = () => {
                     currentUser={true}
                   />
                 ))}
-                {!readings?.length && (
-                  <small>Currently Reading Shelf is empty!</small>
-                )}
+                {!readings?.length ? <Empty /> : null}
               </div>
             </div>
           </Col>
@@ -71,6 +70,7 @@ const Home = () => {
             {posts?.map((post) => (
               <Post key={post._id} post={post} />
             ))}
+            {!posts?.length ? <Empty /> : null}
           </Col>
           <Col md={3}></Col>
         </Row>
