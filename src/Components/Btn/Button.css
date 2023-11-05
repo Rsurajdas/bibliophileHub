@@ -18,7 +18,7 @@
 }
 
 .button-solid:hover {
-  background-color: hsl(120, 59%, 17%);
+  background-color: hsl(120, 59%, 17%) !important;
 }
 
 .button-outline {
@@ -28,7 +28,8 @@
 
 .button-outline:hover {
   background-color: #165516;
-  color: #f4f4f4;
+  color: #f4f4f4 !important;
+  border-color: #165516 !important;
 }
 
 .button-text {

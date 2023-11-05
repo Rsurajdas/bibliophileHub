@@ -6,32 +6,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import LoadingScreen from '../../LoadingScreen';
 import 'react-toastify/dist/ReactToastify.css';
 import './Table.css';
-import { Button, Space, notification } from 'antd';
 
 const Table = () => {
   const token = useRouteLoaderData('token');
   const { shelfId } = useParams();
-  const [api, contextHolder] = notification.useNotification();
-  const removeBookConformation = (fn) => {
-    const key = `open${Date.now()}`;
-    const btn = (
-      <Space>
-        <Button type="link" size="small" onClick={() => api.destroy()}>
-          Destroy All
-        </Button>
-        <Button type="primary" size="small" onClick={() => api.destroy(key)}>
-          Confirm
-        </Button>
-      </Space>
-    );
-    api.open({
-      message: 'Notification Title',
-      description: 'Are you sure want to remove this book from shelf?',
-      btn,
-      key,
-      onClose: close,
-    });
-  };
+
   const {
     data: books,
     isLoading: isBooksLoading,
@@ -86,7 +65,6 @@ const Table = () => {
 
   return (
     <>
-      {contextHolder}
       <table>
         <thead>
           <tr>

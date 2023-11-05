@@ -2,73 +2,69 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import Title from '../Components/UI/Title';
 import { Link, useRouteLoaderData, useParams } from 'react-router-dom';
-import Button from './../Components/Btn/Button';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Avatar } from '@mui/material';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import { Button, Empty, message } from 'antd';
+import LoadingScreen from '../LoadingScreen';
 
 const RequestPending = () => {
-  const [requestPending, setRequestPending] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const token = useRouteLoaderData('token');
   const { profileId } = useParams();
+  const [messageApi, contextHolder] = message.useMessage();
+  const queryClient = useQueryClient();
 
-  const fetchPendingRequest = async (id) => {
-    const res = await fetch(
-      `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/request_pending/${id}`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      }
-    );
-    const data = await res.json();
-    setIsLoading(false);
-    setRequestPending(data.data.users);
-  };
-
-  const handleAcceptRequest = async (id) => {
-    try {
-      const res = await fetch(
-        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/accept-request/${id}`,
+  const { data: pendingRequests, isLoading } = useQuery({
+    queryKey: ['request_pending', profileId, token],
+    queryFn: () => {
+      return axios.get(
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/request_pending/${profileId}`,
         {
-          method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         }
       );
-      await res.json();
-      window.location.reload(true);
-    } catch (err) {
-      toast.error(err.message);
-    }
-  };
+    },
+    select: (data) => data.data.data.users,
+  });
 
-  const handleCancelRequest = async (id) => {
-    try {
-      const res = await fetch(
-        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/cancel-request/${id}`,
+  const { isLoading: loading, mutate: handleFriendRequest } = useMutation({
+    mutationFn: async ({ action, id }) => {
+      return axios.post(
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/${action}/${id}`,
+        null,
         {
-          method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         }
       );
-      await res.json();
-      window.location.reload(true);
-    } catch (err) {
-      toast.error(err.message);
-    }
-  };
+    },
+    onSuccess: (data) => {
+      messageApi.open({
+        type: 'success',
+        content: data.data.message,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['request_pending', profileId, token],
+      });
+    },
+    onError: (err) => {
+      messageApi.open({
+        type: 'error',
+        content: err.message,
+      });
+    },
+  });
 
-  useEffect(() => {
-    fetchPendingRequest(profileId);
-  }, [profileId]);
+  if (isLoading) return <LoadingScreen />;
 
   return (
     <main>
+      {contextHolder}
       <section className="py-5">
         <Container>
           <Row>
@@ -90,14 +86,19 @@ const RequestPending = () => {
                       }
                     />
                     <ul>
-                      {!isLoading &&
-                        requestPending.length > 0 &&
-                        requestPending.map((profile) => (
+                      {!pendingRequests.length ? (
+                        <Empty />
+                      ) : (
+                        pendingRequests.map((profile) => (
                           <li key={profile._id}>
                             <div className="friend-item">
                               <div className="friend-left">
                                 <div className="friend-img">
-                                  <img src={profile.photo} alt={profile.name} />
+                                  <Avatar
+                                    src={profile.photo}
+                                    alt={profile.name}
+                                    size="larger"
+                                  />
                                 </div>
                                 <div className="friend-detail ps-2">
                                   <h6
@@ -117,35 +118,35 @@ const RequestPending = () => {
                               </div>
                               <div className="friend-right">
                                 <Button
-                                  text="accept"
-                                  variant="solid"
+                                  type="primary"
+                                  className="button-solid"
+                                  loading={loading}
                                   onClick={() =>
-                                    handleAcceptRequest(profile._id)
+                                    handleFriendRequest({
+                                      action: 'accept-request',
+                                      id: profile._id,
+                                    })
                                   }
-                                  sx={{
-                                    display: 'block',
-                                    marginBottom: '10px',
-                                  }}
-                                />
+                                >
+                                  accept
+                                </Button>
                                 <Button
-                                  text="cancel"
-                                  variant="solid"
+                                  className="button-outline"
                                   onClick={() =>
-                                    handleCancelRequest(profile._id)
+                                    handleFriendRequest({
+                                      action: 'cancel-request',
+                                      id: profile._id,
+                                    })
                                   }
-                                  sx={{
-                                    display: 'block',
-                                    backgroundColor: '#b8b8b8',
-                                  }}
-                                />
+                                >
+                                  Cancel
+                                </Button>
                               </div>
                             </div>
                           </li>
-                        ))}
+                        ))
+                      )}
                     </ul>
-                    {!isLoading && requestPending.length < 0 && (
-                      <p>No pending request</p>
-                    )}
                   </div>
                 </Col>
                 <Col md={4}>

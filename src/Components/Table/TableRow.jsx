@@ -29,7 +29,6 @@ const TableRow = ({ book, shelfId, removeBook }) => {
 
   const { isLoading: isUpdating, mutate: updateShelf } = useMutation({
     mutationFn: async ({ id }) => {
-      console.log({ bookID: book.book._id, shelfID: book.shelf.shelf_id });
       const shelfData = {
         fromShelfId: shelfId === 'all' ? book.shelf.shelf_id : shelfId,
         toShelfId: id,

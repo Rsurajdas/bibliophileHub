@@ -82,41 +82,41 @@ const Profile = () => {
 
   return (
     <main>
-      <section className='py-4 mb-2'>
+      <section className="py-4 mb-2">
         <Container>
           <Row>
-            <Col md={8} className='px-5'>
-              <div className='profile-details'>
+            <Col md={8} className="px-5">
+              <div className="profile-details">
                 <Row>
                   <Col md={3}>
                     <Avatar
-                      sizes='large'
+                      sizes="large"
                       alt={user.name}
                       src={user.photo}
                       sx={{ width: '150px', height: '150px', margin: '0 auto' }}
                     />
                   </Col>
                   <Col md={9}>
-                    <div className='profile-details_content'>
-                      <h5 className='border-bottom pb-1'>{user.name}</h5>
+                    <div className="profile-details_content">
+                      <h5 className="border-bottom pb-1">{user.name}</h5>
                       <div style={{ fontSize: '14px' }}>
-                        <div className=''>
+                        <div className="">
                           <span style={{ fontWeight: 700 }}>Email:</span>{' '}
                           {user.email}
                         </div>
-                        <div className=''>
+                        <div className="">
                           <span style={{ fontWeight: 700 }}>Friends:</span>{' '}
                           <Link to={`/user/friends/${user._id}`}>
                             {user.friends?.length} friends
                           </Link>
                         </div>
-                        <div className=''>
+                        <div className="">
                           <span style={{ fontWeight: 700 }}>Followers:</span>{' '}
                           <Link to={`/user/followers/${profileId}`}>
                             {user.followers?.length} followers
                           </Link>
                         </div>
-                        <div className=''>
+                        <div className="">
                           <span style={{ fontWeight: 700 }}>Following:</span>{' '}
                           <Link to={`/user/following/${user._id}`}>
                             {user.following?.length} following
@@ -124,10 +124,10 @@ const Profile = () => {
                         </div>
                       </div>
                     </div>
-                    <div className='user-posts mt-5'>
+                    <div className="user-posts mt-5">
                       <Title
                         element={
-                          <h5 className='border-bottom pb-2 mb-4'>
+                          <h5 className="border-bottom pb-2 mb-4">
                             User{`'`}s Post
                           </h5>
                         }
@@ -143,21 +143,23 @@ const Profile = () => {
               </div>
             </Col>
             <Col md={4}>
-              <div className='user-following mt-4'>
+              <div className="user-following mt-4">
                 <Title
                   element={
                     <h6
-                      className='border-bottom pb-2 mb-2'
-                      style={{ fontWeight: 700, fontSize: '14px' }}>
+                      className="border-bottom pb-2 mb-2"
+                      style={{ fontWeight: 700, fontSize: '14px' }}
+                    >
                       {user.name} is following
                     </h6>
                   }
                 />
-                {user.following?.length > 0 && (
+                {user.following?.length && (
                   <AvatarGroup
                     max={4}
                     total={user.following?.length}
-                    sx={{ justifyContent: 'flex-end' }}>
+                    sx={{ justifyContent: 'flex-end' }}
+                  >
                     {user.following?.map((following) => (
                       <Avatar
                         key={following._id}
@@ -167,19 +169,20 @@ const Profile = () => {
                     ))}
                   </AvatarGroup>
                 )}
-                {user.following?.length === 0 && <p>you following no one</p>}
+                {!user.following?.length && <p>you following no one</p>}
               </div>
-              {user.request_pending?.length > 0 && currentUser === profileId ? (
-                <div className='user-following mt-4'>
+              {user.request_pending?.length && currentUser === profileId ? (
+                <div className="user-following mt-4">
                   <Title
                     element={
-                      <div className='d-flex align-items-center border-bottom pb-2 mb-2 justify-content-between'>
+                      <div className="d-flex align-items-center border-bottom pb-2 mb-2 justify-content-between">
                         <h6
                           style={{
                             fontWeight: 700,
                             fontSize: '14px',
                             margin: 0,
-                          }}>
+                          }}
+                        >
                           Pending request
                         </h6>
                         <Link to={`/request-pending/${profileId}`}>
@@ -191,7 +194,8 @@ const Profile = () => {
                   <AvatarGroup
                     max={4}
                     total={user.request_pending?.length}
-                    sx={{ justifyContent: 'flex-end' }}>
+                    sx={{ justifyContent: 'flex-end' }}
+                  >
                     {user.request_pending?.map((profile) => (
                       <Avatar
                         key={profile._id}
@@ -202,17 +206,18 @@ const Profile = () => {
                   </AvatarGroup>
                 </div>
               ) : null}
-              <div className='currently-reading mt-4'>
+              <div className="currently-reading mt-4">
                 <Title
                   element={
                     <h6
-                      className='border-bottom pb-2 mb-2'
-                      style={{ fontWeight: 700, fontSize: '14px' }}>
+                      className="border-bottom pb-2 mb-2"
+                      style={{ fontWeight: 700, fontSize: '14px' }}
+                    >
                       {user.name} currently reading
                     </h6>
                   }
                 />
-                <div className='mt-3'>
+                <div className="mt-3">
                   {readings?.map((data) => (
                     <CurrentlyReading
                       key={data.book._id}

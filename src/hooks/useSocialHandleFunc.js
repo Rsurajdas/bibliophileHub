@@ -4,7 +4,6 @@ import { useRouteLoaderData } from 'react-router-dom';
 
 export const useSocialHandleFunc = (action) => {
   const token = useRouteLoaderData('token');
-  console.log({ action, token });
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useMutation({
     mutationFn: async (userId) => {

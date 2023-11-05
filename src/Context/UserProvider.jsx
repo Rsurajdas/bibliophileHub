@@ -11,34 +11,8 @@ export const UserProvider = ({ children }) => {
   const token = getAuthToken();
   const userId = getUserId();
 
-  // const [user, setUser] = useState({});
-  // const [isLoading, setIsLoading] = useState(false);
-
-  // const fetchUser = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const res = await axios.get(
-  //       `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/get-user/${userId}`,
-  //       {
-  //         headers: {
-  //           'Authorization': `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     const { data } = res;
-  //     setUser(data.data.user);
-  //     setIsLoading(false);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchUser();
-  // }, []);
-
   const { data: user, isLoading } = useQuery({
-    queryKey: ['current-user', userId],
+    queryKey: ['current-user', userId, token],
     queryFn: () => {
       return axios.get(
         `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/users/get-user/${userId}`,
@@ -54,7 +28,6 @@ export const UserProvider = ({ children }) => {
   });
   return (
     <UserContext.Provider value={{ user, isLoading }}>
-      {console.log(userId)}
       {children}
     </UserContext.Provider>
   );

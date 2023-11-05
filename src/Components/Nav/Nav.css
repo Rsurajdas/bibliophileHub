@@ -23,16 +23,18 @@
   margin-left: 1.5rem;
 }
 .nav-list {
-  padding: 12px 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
 }
-.nav-list:hover {
-  background-color: hsl(120, 59%, 17%);
+.nav-link {
+  padding: 12px 15px;
+  margin-left: 10px;
 }
-.nav-list:hover .nav-link {
+.nav-link:hover,
+.nav-link.active {
+  background-color: hsl(120, 59%, 17%);
   color: #f4f4f4;
 }
 .nav-icon {

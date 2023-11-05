@@ -3,7 +3,6 @@ import ProfileList from '../Components/Profile/ProfileList';
 import { useSocials } from '../hooks/useSocials';
 import LoadingScreen from '../LoadingScreen';
 import Title from '../Components/UI/Title';
-import { useSocialHandleFunc } from '../hooks/useSocialHandleFunc.js';
 
 const Followers = () => {
   const { profileId } = useParams();
@@ -13,15 +12,16 @@ const Followers = () => {
 
   return (
     <>
-      <div className='friends-wrapper'>
+      <div className="friends-wrapper">
         <Title
           element={
             <h6
-              className='border-bottom pb-2 mb-2'
+              className="border-bottom pb-2 mb-2"
               style={{
                 fontWeight: 700,
                 fontSize: '14px',
-              }}>
+              }}
+            >
               Followers
             </h6>
           }
@@ -31,7 +31,7 @@ const Followers = () => {
             <ProfileList
               key={friend._id}
               profile={friend}
-              btnName='following'
+              btnName="following"
             />
           ))}
         </ul>
