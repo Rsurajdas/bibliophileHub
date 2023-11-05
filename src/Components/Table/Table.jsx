@@ -6,17 +6,38 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import LoadingScreen from '../../LoadingScreen';
 import 'react-toastify/dist/ReactToastify.css';
 import './Table.css';
+import { Button, Space, notification } from 'antd';
 
 const Table = () => {
   const token = useRouteLoaderData('token');
   const { shelfId } = useParams();
-
+  const [api, contextHolder] = notification.useNotification();
+  const removeBookConformation = (fn) => {
+    const key = `open${Date.now()}`;
+    const btn = (
+      <Space>
+        <Button type="link" size="small" onClick={() => api.destroy()}>
+          Destroy All
+        </Button>
+        <Button type="primary" size="small" onClick={() => api.destroy(key)}>
+          Confirm
+        </Button>
+      </Space>
+    );
+    api.open({
+      message: 'Notification Title',
+      description: 'Are you sure want to remove this book from shelf?',
+      btn,
+      key,
+      onClose: close,
+    });
+  };
   const {
     data: books,
     isLoading: isBooksLoading,
     isFetching: isBooksFetching,
   } = useQuery({
-    queryKey: ['get-shelf-books', shelfId],
+    queryKey: ['get-shelf-books', shelfId, token],
     queryFn: () => {
       return axios.get(
         `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/all-books-user-shelves/${
@@ -34,7 +55,7 @@ const Table = () => {
 
   const queryClient = useQueryClient();
 
-  const { isLoading: isRemoving, mutate } = useMutation({
+  const { isLoading: isRemoving, mutate: removeBook } = useMutation({
     mutationFn: async ({ shelf_id, bookId }) => {
       const confirm = window.confirm(
         'Are you sure want to remove this book from shelf?'
@@ -61,10 +82,11 @@ const Table = () => {
     },
   });
 
-  if (isBooksLoading || isBooksFetching) return <LoadingScreen />;
+  if (isBooksLoading) return <LoadingScreen />;
 
   return (
     <>
+      {contextHolder}
       <table>
         <thead>
           <tr>
@@ -84,20 +106,20 @@ const Table = () => {
               key={book.book._id}
               book={book}
               shelfId={shelfId}
-              removeBook={mutate}
+              removeBook={removeBook}
               isRemoving={isRemoving}
             />
           ))}
           {!books?.length && (
             <tr>
-              <td colSpan='8' style={{ textAlign: 'center' }}>
+              <td colSpan="8" style={{ textAlign: 'center' }}>
                 No book was found on the shelf.
               </td>
             </tr>
           )}
         </tbody>
       </table>
-      <ToastContainer position='bottom-left' />
+      <ToastContainer position="bottom-left" />
     </>
   );
 };

@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link, useRouteLoaderData, useParams } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import { DownOutlined } from '@ant-design/icons';
-import { Dropdown, Space, Spin } from 'antd';
+import { Dropdown, Space, Spin, message } from 'antd';
 import axios from 'axios';
 import { Avatar } from '@mui/material';
-import { ToastContainer, toast } from 'react-toastify';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Button from './../Components/Btn/Button';
 import Capitalize from 'lodash.capitalize';
@@ -31,6 +30,7 @@ const BookDetail = () => {
   const userId = getUserId();
   const { shelves } = useShelves();
   const queryClient = useQueryClient();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const {
     data,
@@ -104,38 +104,42 @@ const BookDetail = () => {
     }
   }, [data?.review]);
 
-  const handleRating = async (e, newValue) => {
-    try {
+  const { mutate: handleRating } = useMutation({
+    mutationFn: async ({ newValue }) => {
+      const ratingData = {
+        rating: newValue,
+      };
       if (!saveRating) {
-        const ratingData = {
-          rating: newValue,
-        };
-        const res = await axios.post(
-          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/${data?.book._id}/reviews`,
+        return await axios.post(
+          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/${id}/reviews`,
           ratingData,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
-        const { data } = res;
-        setSavRating(data.data.review.rating);
-        toast.success(`${newValue} star rating is saved`);
       } else {
-        const ratingData = {
-          rating: newValue,
-        };
-        const res = await axios.patch(
-          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/${data?.book._id}/reviews`,
+        return axios.patch(
+          `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/books/${id}/reviews`,
           ratingData,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
-        const { data } = res;
-        setSavRating(data.data.review.rating);
-        toast.success(`Rating updated to ${newValue} star rating`);
       }
-    } catch (err) {
-      toast.error(err.message);
-    }
-  };
-
+    },
+    onSuccess: (data) => {
+      setSavRating(data.data.data.review.rating);
+      messageApi.open({
+        type: 'success',
+        content: `${data.data.data.review.rating} star rating is saved`,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['book-detail', id, token],
+      });
+    },
+    onError: (err) => {
+      messageApi.open({
+        type: 'error',
+        content: err.message,
+      });
+    },
+  });
   const { mutate: followToggle } = useMutation({
     mutationFn: async ({ id }) => {
       const action = isFollowing ? 'unfollow' : 'follow';
@@ -156,12 +160,10 @@ const BookDetail = () => {
       });
     },
   });
-
-  const { isLoading: isAdding, mutate: addToSelf } = useMutation({
-    mutationFn: async ({ e, newValue }) => {
-      console.log(e, newValue);
+  const { isLoading: isAdding, mutate: addToShelf } = useMutation({
+    mutationFn: async ({ id }) => {
       await axios.post(
-        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/add-book/${newValue}/${data?.book._id}`,
+        `https://boiling-wildwood-46640-30ec30629e36.herokuapp.com/api/v1/shelf/add-book/${id}/${data?.book._id}`,
         null,
         {
           headers: {
@@ -182,6 +184,7 @@ const BookDetail = () => {
 
   return (
     <main>
+      {contextHolder}
       <section style={{ padding: '20px 0' }}>
         <Container>
           <Row>
@@ -226,11 +229,10 @@ const BookDetail = () => {
                 <div className="book-rating" style={{ marginTop: '0.3rem' }}>
                   <Rating
                     size="large"
-                    onChange={handleRating}
+                    onChange={(e, newValue) => handleRating({ newValue })}
                     value={saveRating}
                   />
                 </div>
-                <Button type="button" variant="text" text="Rate this book" />
               </div>
             </Col>
             <Col md={9}>
@@ -241,7 +243,7 @@ const BookDetail = () => {
                 <div className="detail-author">{data?.book.author.name}</div>
                 <Rating
                   name="read-only"
-                  value={4}
+                  value={data?.averageRating}
                   readOnly
                   size="large"
                   sx={{ padding: '8px', margin: '-8px -8px 0 -8px' }}
@@ -312,8 +314,12 @@ const BookDetail = () => {
           </Row>
         </Container>
       </section>
-      <SelectSelf setOpen={setOpen} handleShelf={addToSelf} open={open} />
-      <ToastContainer position="bottom-left" />
+      <SelectSelf
+        setOpen={setOpen}
+        handleShelf={addToShelf}
+        open={open}
+        loading={isAdding}
+      />
     </main>
   );
 };
